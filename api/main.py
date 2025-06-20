@@ -1,29 +1,18 @@
+from collections.abc import AsyncGenerator
+
 from fastapi import FastAPI, Depends
 from typing import Annotated
-from .dependencies import diff_files
+
+from .diff.types import Diff
+from .dependencies import diffs_dep
 import uvicorn
 
 app = FastAPI()
 
-
-def diff_to_dict(diff: dict) -> dict:
-    """Convert a diff object to a dictionary."""
-    edits = diff['diff']
-    return {
-        'left_index': diff['left_index'],
-        'right_index': diff['right_index'],
-        'edits': [{
-            'action': type(d).__name__,
-            **d._asdict()
-        } for d in edits]
-    }
-
-
 @app.post("/diff/")
-async def diff_files(diffs: Annotated[list, Depends(diff_files)]):
-    return {
-        'diff': [diff_to_dict(diff) for diff in diffs],
-    }
+async def diff_files(diffs: Annotated[AsyncGenerator[Diff], Depends(diffs_dep)]):
+    diffs_dicts = [diff async for diff in diffs]  # Collect all diffs into a list
+    return diffs_dicts
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
