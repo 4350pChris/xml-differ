@@ -9,7 +9,7 @@ import uvicorn
 
 app = FastAPI()
 
-@app.post("/diff/")
+@app.post("/diff/", response_model=list[Diff])
 async def diff_files(diffs: Annotated[AsyncGenerator[Diff], Depends(diffs_dep)]):
     diffs_dicts = [diff async for diff in diffs]  # Collect all diffs into a list
     return diffs_dicts
