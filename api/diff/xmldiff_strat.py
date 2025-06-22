@@ -1,11 +1,25 @@
-from typing import Iterable, NamedTuple
+from collections.abc import Iterable
+from typing import NamedTuple
+
 from lxml import etree
 from xmldiff import main as xmldiff_main
 
 from .types import (
-    DiffStrategy, Edit, InsertNode, DeleteNode, RenameNode, MoveNode, UpdateTextIn, UpdateTextAfter,
-    UpdateAttrib, DeleteAttrib, InsertAttrib, RenameAttrib, InsertComment,
-    InsertNamespace, DeleteNamespace
+    DeleteAttrib,
+    DeleteNamespace,
+    DeleteNode,
+    DiffStrategy,
+    Edit,
+    InsertAttrib,
+    InsertComment,
+    InsertNamespace,
+    InsertNode,
+    MoveNode,
+    RenameAttrib,
+    RenameNode,
+    UpdateAttrib,
+    UpdateTextAfter,
+    UpdateTextIn,
 )
 
 ACTION_TO_CLASS = {
@@ -24,12 +38,14 @@ ACTION_TO_CLASS = {
     "DeleteNamespace": DeleteNamespace,
 }
 
+
 def tree_diff_to_edit(tree_diff: NamedTuple) -> Edit:
     action = type(tree_diff).__name__
     cls = ACTION_TO_CLASS.get(action)
     if cls is None:
         raise ValueError(f"Unknown action: {action}")
     return cls(action=action, **tree_diff._asdict())
+
 
 class XmldiffStrategy(DiffStrategy):
     def __call__(self, left: etree._Element, right: etree._Element) -> Iterable[Edit]:

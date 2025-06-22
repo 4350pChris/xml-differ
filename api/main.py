@@ -1,14 +1,39 @@
+import logging
 from collections.abc import AsyncGenerator
-
-from fastapi import FastAPI, Depends
+from contextlib import asynccontextmanager
 from typing import Annotated
 
-from .db.connection import db_lifespan
-from .diff.types import Diff
-from .dependencies import diffs_dep
 import uvicorn
+from fastapi import Depends, FastAPI
 
-app = FastAPI(lifespan=db_lifespan, title="XML Diff API", description="API for comparing XML files of German laws")
+from .db.connection import close_db, init_db
+from .dependencies import diffs_dep
+from .diff.types import Diff
+from .laws.info import clone_repo, repo_exists
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if not repo_exists():
+        clone_repo()
+    mongo_client = await init_db()
+
+    yield
+
+    close_db(mongo_client)
+
+
+app = FastAPI(
+    lifespan=lifespan,
+    title="XML Diff API",
+    description="API for comparing XML files of German laws",
+)
 
 
 @app.post("/diff/", response_model=list[Diff])

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import List
 
 from lxml import etree
 
@@ -97,8 +96,21 @@ class DeleteNamespace(Edit):
 class Diff:
     left_index: int
     right_index: int
-    edits: List[
-        InsertNode | DeleteNode | RenameNode | MoveNode | UpdateTextIn | UpdateTextAfter | UpdateAttrib | DeleteAttrib | InsertAttrib | RenameAttrib | InsertComment | InsertNamespace | DeleteNamespace]
+    edits: list[
+        InsertNode
+        | DeleteNode
+        | RenameNode
+        | MoveNode
+        | UpdateTextIn
+        | UpdateTextAfter
+        | UpdateAttrib
+        | DeleteAttrib
+        | InsertAttrib
+        | RenameAttrib
+        | InsertComment
+        | InsertNamespace
+        | DeleteNamespace
+    ]
 
 
 class DiffStrategy(ABC):
