@@ -4,7 +4,7 @@ from logging import getLogger
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from .models import Law
+from .models import Law, Paragraph
 
 logger = getLogger(__name__)
 
@@ -16,7 +16,7 @@ async def init_db():
     logger.info("Connecting to database at %s", CONNECTION_STRING)
     mongodb_client = AsyncIOMotorClient(CONNECTION_STRING)
     database = mongodb_client.get_database("laws")
-    await init_beanie(database=database, document_models=[Law])
+    await init_beanie(database=database, document_models=[Paragraph, Law])
 
     return mongodb_client
 

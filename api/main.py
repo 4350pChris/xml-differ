@@ -4,17 +4,18 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 import uvicorn
+from beanie import WriteRules
 from fastapi import Depends, FastAPI, BackgroundTasks, status
 
+from .laws.parser import iter_laws
 from .db.models import Law
 from .db.connection import close_db, init_db
 from .dependencies import diffs_dep
 from .diff.types import Diff
-from .laws.info import (
+from .laws.repo import (
     clone_repo,
     repo_exists,
     get_all_file_paths,
-    iter_laws,
 )
 
 logging.basicConfig(
@@ -49,16 +50,11 @@ async def diff_files(diffs: Annotated[AsyncGenerator[Diff], Depends(diffs_dep)])
 
 
 async def import_file(file: str):
-    laws_to_insert = []
     for law in iter_laws(file):
         existing_law = await Law.find_one(Law.name == law.name, Law.date == law.date)
         if existing_law is None:
-            laws_to_insert.append(law)
-    if laws_to_insert:
-        await Law.insert_many(laws_to_insert)
-        logging.info(
-            f"Inserted {len(laws_to_insert)} new laws for {laws_to_insert[0].name}."
-        )
+            continue
+        await law.insert_one(link_rule=WriteRules.WRITE)
 
 
 @app.post("/import/", status_code=status.HTTP_202_ACCEPTED)

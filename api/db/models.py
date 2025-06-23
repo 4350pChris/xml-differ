@@ -1,8 +1,26 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 import pymongo
-from beanie import Document
+from beanie import Document, Link
+
+
+class Paragraph(Document):
+    """
+    Represents a paragraph in a law document.
+    """
+
+    index: int
+    title: str
+    content: str
+
+    class Settings:
+        indexes = [
+            [
+                ("index", pymongo.ASCENDING),
+                ("title", pymongo.TEXT),
+            ]
+        ]
 
 
 class Law(Document):
@@ -14,7 +32,7 @@ class Law(Document):
     short_title: Optional[str] = None
     long_title: Optional[str] = None
     date: datetime
-    content: str
+    paragraphs: List[Link[Paragraph]]
 
     class Settings:
         indexes = [
