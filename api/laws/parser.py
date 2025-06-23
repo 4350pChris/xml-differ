@@ -1,10 +1,9 @@
 import logging
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from typing import Generator
+from typing import List, Tuple
 
 from ..db.models import Paragraph, Law
-from ..laws.repo import iter_file_contents
 
 logger = logging.getLogger("laws.parser")
 
@@ -33,22 +32,19 @@ def paragraph_from_element(index: int, el: ET.Element) -> Paragraph | None:
     return Paragraph(index=index, title=titleEl.text, content=content)
 
 
-def law_from_file(content: str, date: datetime) -> Law:
+def paragraphs_from_elements(elements: List[ET.Element]) -> List[Paragraph]:
+    paragraphs = []
+    for i, el in enumerate(elements):
+        paragraph = paragraph_from_element(i, el)
+        if paragraph is not None:
+            paragraphs.append(paragraph)
+    return paragraphs
+
+
+def law_from_file(content: str, date: datetime) -> Tuple[Law, List[ET.Element]]:
     tree = ET.ElementTree(ET.fromstring(content))
     [metadataEl, *paragraphEls] = tree.findall("norm")
 
     metadata = get_law_metadata(metadataEl)
-    paragraphs = [paragraph_from_element(i, el) for i, el in enumerate(paragraphEls)]
 
-    return Law(
-        date=date, paragraphs=[p for p in paragraphs if p is not None], **metadata
-    )
-
-
-def iter_laws(path: str) -> Generator[Law]:
-    for content, date in iter_file_contents(path):
-        try:
-            yield law_from_file(content, date)
-        except ValueError as e:
-            logger.error(f"Error parsing law from file {path} on date {date}: {e}")
-            continue
+    return Law(date=date, paragraphs=[], **metadata), paragraphEls

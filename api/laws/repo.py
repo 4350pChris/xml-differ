@@ -36,25 +36,22 @@ def get_file_content(tag: TagReference, file_path: str) -> str:
     return blob.data_stream.read().decode("utf-8")
 
 
-def iter_file_contents(file_path: str) -> Generator[Tuple[str, datetime]]:
-    for prev, tag in get_all_tags_with_previous():
-        diff = tag.commit.diff(prev.commit, paths=file_path) if prev else None
-        if prev and not diff or diff and diff[0].deleted_file:
-            continue
+def iter_tag_contents() -> Generator[Tuple[str, datetime]]:
+    for previous, tag in get_all_tags_with_previous():
+        prev_commit = previous.commit if previous else tag.commit.parents[0]
+        diff = prev_commit.diff(tag.commit)
+        for change in diff:
+            if change.deleted_file:
+                continue
 
-        logger.info(f"Processing file {file_path} in tag {tag.name}")
-        try:
-            content = get_file_content(tag, file_path)
-        except KeyError:
-            logger.warning(f"File {file_path} not found in tag {tag.name}")
-            continue
-        yield content, datetime.strptime(tag.name, "%Y-%m-%d")
+            file_path = change.b_path
+            if not file_path.endswith(".xml"):
+                continue
 
-
-def get_all_file_paths() -> list[str]:
-    repo = Repo(local_path)
-    return [
-        item.path
-        for item in repo.tree()["data/items"].traverse()
-        if item.path.endswith(".xml")
-    ]
+            logger.info(f"Processing file {file_path} in tag {tag.name}")
+            try:
+                content = get_file_content(tag, file_path)
+                yield content, datetime.strptime(tag.name, "%Y-%m-%d")
+            except KeyError:
+                logger.warning(f"File {file_path} not found in tag {tag.name}")
+                continue
