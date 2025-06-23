@@ -1,8 +1,12 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional, List
 
 import pymongo
 from beanie import Document, Link, Indexed
+
+
+class LawVersion(Document):
+    date: Indexed(date)
 
 
 class Paragraph(Document):
@@ -10,6 +14,7 @@ class Paragraph(Document):
     Represents a paragraph in a law document.
     """
 
+    version: Link[LawVersion]
     index: int
     title: str
     content: str
@@ -17,19 +22,10 @@ class Paragraph(Document):
     class Settings:
         indexes = [
             [
+                ("version", pymongo.ASCENDING),
                 ("index", pymongo.ASCENDING),
-                ("title", pymongo.TEXT),
             ]
         ]
-
-
-class LawVersion(Document):
-    """
-    Represents a version of a law document.
-    """
-
-    date: Indexed(datetime)
-    paragraphs: List[Link[Paragraph]]
 
 
 class Law(Document):

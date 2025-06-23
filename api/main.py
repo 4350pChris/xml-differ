@@ -6,7 +6,7 @@ from typing import Annotated
 import uvicorn
 from fastapi import Depends, FastAPI, BackgroundTasks, status
 
-from db.models import Law
+from .db.models import Law
 from .db.connection import close_db, init_db
 from .dependencies import diffs_dep
 from .diff.types import Diff
@@ -15,6 +15,7 @@ from .laws.repo import (
     repo_exists,
 )
 from .laws.importer import import_files
+from .response_models import LawProjection, PaginatedLawCollection
 
 logging.basicConfig(
     level=logging.INFO,
@@ -53,10 +54,16 @@ async def start_work(background_tasks: BackgroundTasks):
     return {"message": "Work started successfully"}
 
 
-@app.get("/laws/", response_model=list[Law])
-async def get_laws():
-    laws = await Law.find_all().to_list()
-    return laws
+@app.get(
+    "/laws/",
+    response_description="List of laws",
+    response_model=PaginatedLawCollection,
+)
+async def get_laws(page: int = 1, limit: int = 2):
+    skip = (page - 1) * limit
+    laws = await Law.find_all().skip(skip).limit(limit).project(LawProjection).to_list()
+    total = await Law.count()
+    return PaginatedLawCollection(laws=laws, total=total, page=page, limit=limit)
 
 
 if __name__ == "__main__":

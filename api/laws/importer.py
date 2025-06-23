@@ -2,7 +2,7 @@ from beanie import WriteRules
 
 from .parser import law_data_from_file, paragraphs_from_elements
 from .repo import iter_tag_contents
-from ..db.models import Law, LawVersion
+from ..db.models import Law, LawVersion, Paragraph
 
 import logging
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 async def get_or_create_law(
     name: str, short_title: str | None = None, long_title: str | None = None
 ) -> Law:
-    law = await Law.find_one(Law.name == name)
+    law = await Law.find_one(Law.name == name, fetch_links=True)
     if law is None:
         law = Law(
             name=name, short_title=short_title, long_title=long_title, versions=[]
@@ -29,9 +29,19 @@ async def import_files():
         # skip if this version exists
         if any(version.date == date for version in existing_law.versions):
             continue
-        version = LawVersion(
-            date=date, paragraphs=paragraphs_from_elements(paragraphEls)
-        )
-        await version.insert(link_rule=WriteRules.WRITE)
+        version = LawVersion(date=date)
+        await version.create()
+        paragraphs = paragraphs_from_elements(paragraphEls, version)
+        if not paragraphs:
+            logger.warning(f"No paragraphs found for law {existing_law.name} on {date}")
+            await version.delete(link_rule=WriteRules.WRITE)
+            if not existing_law.versions:
+                logger.warning(
+                    f"Law {existing_law.name} has no versions left, deleting"
+                )
+                await existing_law.delete(link_rule=WriteRules.WRITE)
+            continue
+        await Paragraph.insert_many(paragraphs)
+
         existing_law.versions.append(version)
         await existing_law.save(link_rule=WriteRules.WRITE)

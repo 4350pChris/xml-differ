@@ -1,7 +1,7 @@
 from logging import getLogger
 from pathlib import Path
 from typing import Generator, Tuple
-from datetime import datetime
+from datetime import date
 
 from git import Repo, TagReference
 
@@ -36,7 +36,7 @@ def get_file_content(tag: TagReference, file_path: str) -> str:
     return blob.data_stream.read().decode("utf-8")
 
 
-def iter_tag_contents() -> Generator[Tuple[str, datetime]]:
+def iter_tag_contents() -> Generator[Tuple[str, date]]:
     for previous, tag in get_all_tags_with_previous():
         logger.info(f"Processing {tag.name}")
         prev_commit = previous.commit if previous else tag.commit.parents[0]
@@ -51,7 +51,7 @@ def iter_tag_contents() -> Generator[Tuple[str, datetime]]:
 
             try:
                 content = get_file_content(tag, file_path)
-                yield content, datetime.strptime(tag.name, "%Y-%m-%d")
+                yield content, date.fromisoformat(tag.name)
             except KeyError:
                 logger.warning(f"File {file_path} not found in tag {tag.name}")
                 continue
