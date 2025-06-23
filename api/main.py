@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 import uvicorn
-from fastapi import Depends, FastAPI, BackgroundTasks, status
+from fastapi import Depends, FastAPI, BackgroundTasks, status, HTTPException
 
 from .db.models import Law
 from .db.connection import close_db, init_db
@@ -15,7 +15,11 @@ from .laws.repo import (
     repo_exists,
 )
 from .laws.importer import import_files
-from .response_models import LawProjection, PaginatedLawCollection
+from .response_models import (
+    LawListProjection,
+    PaginatedLawCollection,
+    LawDetailProjection,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,28 +46,42 @@ app = FastAPI(
 )
 
 
-@app.post("/diff/", response_model=list[Diff])
+@app.post("/diff", response_model=list[Diff])
 async def diff_files(diffs: Annotated[AsyncGenerator[Diff], Depends(diffs_dep)]):
     diffs_dicts = [diff async for diff in diffs]  # Collect all diffs into a list
     return diffs_dicts
 
 
-@app.post("/import/", status_code=status.HTTP_202_ACCEPTED)
+@app.post("/import", status_code=status.HTTP_202_ACCEPTED)
 async def start_work(background_tasks: BackgroundTasks):
     background_tasks.add_task(import_files)
     return {"message": "Work started successfully"}
 
 
 @app.get(
-    "/laws/",
+    "/laws",
     response_description="List of laws",
     response_model=PaginatedLawCollection,
 )
-async def get_laws(page: int = 1, limit: int = 2):
+async def get_laws(page: int = 1, limit: int = 100):
     skip = (page - 1) * limit
-    laws = await Law.find_all().skip(skip).limit(limit).project(LawProjection).to_list()
+    laws = (
+        await Law.find_all()
+        .skip(skip)
+        .limit(limit)
+        .project(LawListProjection)
+        .to_list()
+    )
     total = await Law.count()
     return PaginatedLawCollection(laws=laws, total=total, page=page, limit=limit)
+
+
+@app.get("/laws/{law_id}", response_model=LawDetailProjection)
+async def get_law_versions(law_id: str):
+    law = await Law.get(law_id, fetch_links=True, projection_model=LawDetailProjection)
+    if not law:
+        raise HTTPException(status_code=404, detail="Law not found")
+    return law
 
 
 if __name__ == "__main__":
