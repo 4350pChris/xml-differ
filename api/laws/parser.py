@@ -1,9 +1,9 @@
 import logging
 import xml.etree.ElementTree as ET
-from datetime import datetime
-from typing import List, Tuple
+from typing import List
 
-from ..db.models import Paragraph, Law
+
+from ..db.models import Paragraph
 
 logger = logging.getLogger("laws.parser")
 
@@ -41,10 +41,10 @@ def paragraphs_from_elements(elements: List[ET.Element]) -> List[Paragraph]:
     return paragraphs
 
 
-def law_from_file(content: str, date: datetime) -> Tuple[Law, List[ET.Element]]:
+def law_data_from_file(content: str) -> tuple[dict[str, str | None], List[ET.Element]]:
     tree = ET.ElementTree(ET.fromstring(content))
     [metadataEl, *paragraphEls] = tree.findall("norm")
 
     metadata = get_law_metadata(metadataEl)
 
-    return Law(date=date, paragraphs=[], **metadata), paragraphEls
+    return metadata, paragraphEls

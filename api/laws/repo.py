@@ -38,6 +38,7 @@ def get_file_content(tag: TagReference, file_path: str) -> str:
 
 def iter_tag_contents() -> Generator[Tuple[str, datetime]]:
     for previous, tag in get_all_tags_with_previous():
+        logger.info(f"Processing {tag.name}")
         prev_commit = previous.commit if previous else tag.commit.parents[0]
         diff = prev_commit.diff(tag.commit, paths="data/items")
         for change in diff:
@@ -48,7 +49,6 @@ def iter_tag_contents() -> Generator[Tuple[str, datetime]]:
             if not file_path.endswith(".xml"):
                 continue
 
-            logger.info(f"Processing file {file_path} in tag {tag.name}")
             try:
                 content = get_file_content(tag, file_path)
                 yield content, datetime.strptime(tag.name, "%Y-%m-%d")

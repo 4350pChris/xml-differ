@@ -6,6 +6,7 @@ from typing import Annotated
 import uvicorn
 from fastapi import Depends, FastAPI, BackgroundTasks, status
 
+from db.models import Law
 from .db.connection import close_db, init_db
 from .dependencies import diffs_dep
 from .diff.types import Diff
@@ -50,6 +51,12 @@ async def diff_files(diffs: Annotated[AsyncGenerator[Diff], Depends(diffs_dep)])
 async def start_work(background_tasks: BackgroundTasks):
     background_tasks.add_task(import_files)
     return {"message": "Work started successfully"}
+
+
+@app.get("/laws/", response_model=list[Law])
+async def get_laws():
+    laws = await Law.find_all().to_list()
+    return laws
 
 
 if __name__ == "__main__":
