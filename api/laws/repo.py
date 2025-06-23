@@ -39,7 +39,7 @@ def get_file_content(tag: TagReference, file_path: str) -> str:
 def iter_tag_contents() -> Generator[Tuple[str, datetime]]:
     for previous, tag in get_all_tags_with_previous():
         prev_commit = previous.commit if previous else tag.commit.parents[0]
-        diff = prev_commit.diff(tag.commit)
+        diff = prev_commit.diff(tag.commit, paths="data/items")
         for change in diff:
             if change.deleted_file:
                 continue
