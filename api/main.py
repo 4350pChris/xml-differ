@@ -10,7 +10,7 @@ from .laws.repo import (
     repo_exists,
 )
 from .laws.importer import import_files
-from .routers import laws
+from .routers import laws, paragraphs, diff
 
 logging.basicConfig(
     level=logging.INFO,
@@ -37,6 +37,8 @@ app = FastAPI(
 )
 
 app.include_router(laws.router)
+app.include_router(paragraphs.router)
+app.include_router(diff.router)
 
 
 @app.post("/import", status_code=status.HTTP_202_ACCEPTED)

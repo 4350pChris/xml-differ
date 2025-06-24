@@ -26,7 +26,7 @@ def match_paragraphs(
 
 
 async def diff_files(
-    diff_strategy: DiffStrategy, left: bytes, right: bytes
+    diff_strategy: DiffStrategy, left: str, right: str
 ) -> AsyncGenerator[Diff]:
     # TODO: how to handle large files?
     parser = etree.XMLParser(remove_blank_text=True)
