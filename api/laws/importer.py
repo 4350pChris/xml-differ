@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 async def get_or_create_law(
     name: str, short_title: str | None = None, long_title: str | None = None
 ) -> Law:
-    law = await Law.find_one(Law.name == name, fetch_links=True)
+    law = await Law.find_one(Law.name == name, fetch_links=True, nesting_depth=1)
     if law is None:
         law = Law(
             name=name, short_title=short_title, long_title=long_title, versions=[]
