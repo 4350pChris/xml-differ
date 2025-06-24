@@ -1,25 +1,16 @@
 import logging
-from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Annotated
 
 import uvicorn
-from fastapi import Depends, FastAPI, BackgroundTasks, status, HTTPException
+from fastapi import FastAPI, BackgroundTasks, status
 
-from .db.models import Law
 from .db.connection import close_db, init_db
-from .dependencies import diffs_dep
-from .diff.types import Diff
 from .laws.repo import (
     clone_repo,
     repo_exists,
 )
 from .laws.importer import import_files
-from .response_models import (
-    LawListProjection,
-    PaginatedLawCollection,
-    LawDetailProjection,
-)
+from .routers import laws
 
 logging.basicConfig(
     level=logging.INFO,
@@ -45,43 +36,13 @@ app = FastAPI(
     description="API for comparing XML files of German laws",
 )
 
-
-@app.post("/diff", response_model=list[Diff])
-async def diff_files(diffs: Annotated[AsyncGenerator[Diff], Depends(diffs_dep)]):
-    diffs_dicts = [diff async for diff in diffs]  # Collect all diffs into a list
-    return diffs_dicts
+app.include_router(laws.router)
 
 
 @app.post("/import", status_code=status.HTTP_202_ACCEPTED)
 async def start_work(background_tasks: BackgroundTasks):
     background_tasks.add_task(import_files)
     return {"message": "Work started successfully"}
-
-
-@app.get(
-    "/laws",
-    response_description="List of laws",
-    response_model=PaginatedLawCollection,
-)
-async def get_laws(page: int = 1, limit: int = 100):
-    skip = (page - 1) * limit
-    laws = (
-        await Law.find_all()
-        .skip(skip)
-        .limit(limit)
-        .project(LawListProjection)
-        .to_list()
-    )
-    total = await Law.count()
-    return PaginatedLawCollection(laws=laws, total=total, page=page, limit=limit)
-
-
-@app.get("/laws/{law_id}", response_model=LawDetailProjection)
-async def get_law_versions(law_id: str):
-    law = await Law.get(law_id, fetch_links=True, projection_model=LawDetailProjection)
-    if not law:
-        raise HTTPException(status_code=404, detail="Law not found")
-    return law
 
 
 if __name__ == "__main__":

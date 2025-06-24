@@ -2,7 +2,7 @@ import logging
 import xml.etree.ElementTree as ET
 from typing import List
 
-from ..db.models import LawVersion, Paragraph
+from ..db.models import Paragraph
 
 logger = logging.getLogger("laws.parser")
 
@@ -23,22 +23,18 @@ def get_law_metadata(el: ET.Element) -> dict[str, str | None]:
     }
 
 
-def paragraph_from_element(
-    index: int, el: ET.Element, version: LawVersion
-) -> Paragraph | None:
+def paragraph_from_element(index: int, el: ET.Element) -> Paragraph | None:
     titleEl = el.find("metadaten").find("enbez")
     if titleEl is None:
         return None
     content = ET.tostring(el, encoding="unicode")
-    return Paragraph(index=index, title=titleEl.text, content=content, version=version)
+    return Paragraph(index=index, title=titleEl.text, content=content)
 
 
-def paragraphs_from_elements(
-    elements: List[ET.Element], version: LawVersion
-) -> List[Paragraph]:
+def paragraphs_from_elements(elements: List[ET.Element]) -> List[Paragraph]:
     paragraphs = []
     for i, el in enumerate(elements):
-        paragraph = paragraph_from_element(i, el, version)
+        paragraph = paragraph_from_element(i, el)
         if paragraph is not None:
             paragraphs.append(paragraph)
     return paragraphs

@@ -5,27 +5,22 @@ import pymongo
 from beanie import Document, Link, Indexed
 
 
-class LawVersion(Document):
-    date: Indexed(date)
-
-
 class Paragraph(Document):
     """
     Represents a paragraph in a law document.
     """
 
-    version: Link[LawVersion]
     index: int
     title: str
     content: str
 
     class Settings:
-        indexes = [
-            [
-                ("version", pymongo.ASCENDING),
-                ("index", pymongo.ASCENDING),
-            ]
-        ]
+        indexes = [[("version.$id", pymongo.ASCENDING), ("index", pymongo.ASCENDING)]]
+
+
+class LawVersion(Document):
+    date: Indexed(date)
+    paragraphs: List[Link[Paragraph]]
 
 
 class Law(Document):

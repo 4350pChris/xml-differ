@@ -1,4 +1,5 @@
 from beanie import WriteRules
+from beanie.operators import In
 
 from .parser import law_data_from_file, paragraphs_from_elements
 from .repo import iter_tag_contents
@@ -29,19 +30,20 @@ async def import_files():
         # skip if this version exists
         if any(version.date == date for version in existing_law.versions):
             continue
-        version = LawVersion(date=date)
-        await version.create()
-        paragraphs = paragraphs_from_elements(paragraphEls, version)
+        paragraphs = paragraphs_from_elements(paragraphEls)
         if not paragraphs:
             logger.warning(f"No paragraphs found for law {existing_law.name} on {date}")
-            await version.delete(link_rule=WriteRules.WRITE)
             if not existing_law.versions:
                 logger.warning(
                     f"Law {existing_law.name} has no versions left, deleting"
                 )
                 await existing_law.delete(link_rule=WriteRules.WRITE)
             continue
-        await Paragraph.insert_many(paragraphs)
-
+        insert_result = await Paragraph.insert_many(paragraphs)
+        paragraphs = await Paragraph.find(
+            In(Paragraph.id, insert_result.inserted_ids)
+        ).to_list()
+        version = LawVersion(date=date, paragraphs=paragraphs)
+        await version.create()
         existing_law.versions.append(version)
         await existing_law.save(link_rule=WriteRules.WRITE)
