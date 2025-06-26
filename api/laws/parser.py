@@ -2,7 +2,7 @@ import logging
 import xml.etree.ElementTree as ET
 from typing import List
 
-from ..db.models import Paragraph
+from db.models import Paragraph
 
 logger = logging.getLogger("laws.parser")
 

@@ -2,9 +2,9 @@ from typing import Annotated, List, Generator, Tuple
 
 from fastapi import APIRouter, HTTPException, Depends
 
-from ..dependencies import get_diff_strategy
-from ..diff.types import DiffStrategy, Diff
-from ..db.models import LawVersion, Paragraph
+from dependencies import get_diff_strategy
+from diff.types import DiffStrategy, Diff
+from db.models import LawVersion, Paragraph
 
 router = APIRouter(
     prefix="/diff",

@@ -4,7 +4,7 @@ from typing import NamedTuple
 from lxml import etree
 from xmldiff import main as xmldiff_main
 
-from .types import (
+from diff.types import (
     DeleteAttrib,
     DeleteNamespace,
     DeleteNode,

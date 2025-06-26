@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from beanie.operators import In
 
-from ..db.models import LawVersion, Paragraph
-from .response_models import (
+from db.models import LawVersion, Paragraph
+from routers.response_models import (
     PaginatedParagraphCollection,
     ParagraphProjection,
     LawVersionDetailProjection,

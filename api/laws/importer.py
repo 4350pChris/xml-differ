@@ -1,9 +1,9 @@
 from beanie import WriteRules
 from beanie.operators import In
 
-from .parser import law_data_from_file, paragraphs_from_elements
-from .repo import iter_tag_contents
-from ..db.models import Law, LawVersion, Paragraph
+from laws.parser import law_data_from_file, paragraphs_from_elements
+from laws.repo import iter_tag_contents
+from db.models import Law, LawVersion, Paragraph
 
 import logging
 

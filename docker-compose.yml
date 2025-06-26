@@ -4,12 +4,13 @@ volumes:
 
 services:
   web:
-    # Build the image from the Dockerfile in the current directory
     build: ./api
+    environment:
+      - MONGODB_URI=mongodb://root:example@mongo:27017/
+      - REDIS_URL=redis://redis:6379
 
-    # Host the FastAPI application on port 8000
     ports:
-      - "8000:8000"
+      - "8000:80"
 
     develop:
       # Create a `watch` configuration to update the app
@@ -28,6 +29,12 @@ services:
         # Rebuild the image if dependencies change by checking uv.lock
         - action: rebuild
           path: ./api./uv.lock
+
+  worker:
+    build: ./api
+    command: rq worker --url redis://redis:6379 --with-scheduler
+    environment:
+      - MONGODB_URI=mongodb://root:example@mongo:27017/
 
   mongo:
     image: mongo:latest
@@ -59,6 +66,6 @@ services:
     ports:
       - "6379:6379"
     environment:
-      - VALKEY_EXTRA_FLAGS='--save 60 1 --loglevel warning'
+      - VALKEY_EXTRA_FLAGS=--save 60 1 --loglevel warning
     volumes:
       - redis_data:/data

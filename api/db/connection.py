@@ -4,7 +4,7 @@ from logging import getLogger
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from .models import Law, Paragraph, LawVersion
+from db.models import Law, Paragraph, LawVersion
 
 logger = getLogger(__name__)
 

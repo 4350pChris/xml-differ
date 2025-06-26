@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from ..db.models import Law
-from .response_models import (
+from db.models import Law
+from routers.response_models import (
     LawListProjection,
     PaginatedLawCollection,
     LawDetailProjection,

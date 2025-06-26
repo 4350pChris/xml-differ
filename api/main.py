@@ -1,16 +1,17 @@
 import logging
 from contextlib import asynccontextmanager
+from typing import Annotated
 
 import uvicorn
-from fastapi import FastAPI, BackgroundTasks, status
+from fastapi import FastAPI, status
+from fastapi.params import Depends
+from rq import Queue
 
-from .db.connection import close_db, init_db
-from .laws.repo import (
-    clone_repo,
-    repo_exists,
-)
-from .laws.importer import import_files
-from .routers import laws, paragraphs, diff
+from db.connection import close_db, init_db
+from dependencies import get_queue
+from laws.repo import clone_repo, repo_exists
+from routers import diff, laws, paragraphs
+from worker.tasks import run_import
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,8 +43,8 @@ app.include_router(diff.router)
 
 
 @app.post("/import", status_code=status.HTTP_202_ACCEPTED)
-async def start_work(background_tasks: BackgroundTasks):
-    background_tasks.add_task(import_files)
+async def start_work(queue: Annotated[Queue, Depends(get_queue)]):
+    queue.enqueue(run_import)
     return {"message": "Work started successfully"}
 
 

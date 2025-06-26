@@ -2,7 +2,7 @@ from typing import Iterable
 
 from lxml import etree as ET
 
-from .types import DiffStrategy, Edit
+from diff.types import DiffStrategy, Edit
 
 
 def diff_files(diff_strategy: DiffStrategy, left: str, right: str) -> Iterable[Edit]:
