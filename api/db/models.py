@@ -14,6 +14,9 @@ class Paragraph(Document):
     title: str
     content: str
 
+    def same_as(self, other):
+        return self.title == other.title
+
     class Settings:
         indexes = [[("version.$id", pymongo.ASCENDING), ("index", pymongo.ASCENDING)]]
 
