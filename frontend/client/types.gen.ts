@@ -176,7 +176,7 @@ export type InsertNode = {
  * LawDetailProjection
  */
 export type LawDetailProjection = {
-  id?: PydanticObjectId | null;
+  id: PydanticObjectId;
   /**
    * Name
    */
@@ -199,7 +199,7 @@ export type LawDetailProjection = {
  * LawListProjection
  */
 export type LawListProjection = {
-  id?: PydanticObjectId | null;
+  id: PydanticObjectId;
   /**
    * Name
    */
@@ -218,7 +218,7 @@ export type LawListProjection = {
  * LawVersionListProjection
  */
 export type LawVersionListProjection = {
-  id?: PydanticObjectId | null;
+  id: PydanticObjectId;
   /**
    * Date
    */
@@ -245,28 +245,6 @@ export type MoveNode = {
    * Position
    */
   position: number;
-};
-
-/**
- * PaginatedLawCollection
- */
-export type PaginatedLawCollection = {
-  /**
-   * Total
-   */
-  total: number;
-  /**
-   * Page
-   */
-  page: number;
-  /**
-   * Limit
-   */
-  limit: number;
-  /**
-   * Laws
-   */
-  laws: Array<LawListProjection>;
 };
 
 export type PydanticObjectId = string;
@@ -390,16 +368,7 @@ export type ValidationError = {
 export type GetLawsLawsGetData = {
   body?: never;
   path?: never;
-  query?: {
-    /**
-     * Page
-     */
-    page?: number;
-    /**
-     * Limit
-     */
-    limit?: number;
-  };
+  query?: never;
   url: "/laws/";
 };
 
@@ -408,19 +377,14 @@ export type GetLawsLawsGetErrors = {
    * Not found
    */
   404: unknown;
-  /**
-   * Validation Error
-   */
-  422: HttpValidationError;
 };
-
-export type GetLawsLawsGetError = GetLawsLawsGetErrors[keyof GetLawsLawsGetErrors];
 
 export type GetLawsLawsGetResponses = {
   /**
+   * Response Get Laws Laws  Get
    * List of laws
    */
-  200: PaginatedLawCollection;
+  200: Array<LawListProjection>;
 };
 
 export type GetLawsLawsGetResponse = GetLawsLawsGetResponses[keyof GetLawsLawsGetResponses];
