@@ -18,6 +18,10 @@
     "types": [
       "vite/client"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "jsx": "preserve",
     "jsxImportSource": "vue"
   },
