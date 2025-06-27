@@ -5,6 +5,7 @@ from typing import Annotated
 import uvicorn
 from fastapi import FastAPI, status
 from fastapi.params import Depends
+from fastapi.middleware.cors import CORSMiddleware
 from rq import Queue
 
 from db.connection import close_db, init_db
@@ -32,6 +33,18 @@ app = FastAPI(
     lifespan=lifespan,
     title="XML Diff API",
     description="API for comparing XML files of German laws",
+)
+
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(laws.router)
