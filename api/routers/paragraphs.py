@@ -1,3 +1,4 @@
+from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 from beanie.operators import In
 
@@ -16,7 +17,7 @@ router = APIRouter(
 
 
 @router.get("/", response_description="List of paragraphs")
-async def get_paragraphs(version_id: str, page: int = 1, limit: int = 100):
+async def get_paragraphs(version_id: PydanticObjectId, page: int = 1, limit: int = 100):
     version: LawVersionDetailProjection | None = await LawVersion.get(
         version_id, projection_model=LawVersionDetailProjection
     )

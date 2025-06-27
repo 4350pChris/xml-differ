@@ -1,5 +1,6 @@
 from typing import Annotated, List, Generator, Tuple
 
+from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException, Depends
 
 from dependencies import get_diff_strategy
@@ -14,8 +15,8 @@ router = APIRouter(
 
 
 async def get_matching_paragraphs(
-    left_version_id: str,
-    right_version_id: str,
+    left_version_id: PydanticObjectId,
+    right_version_id: PydanticObjectId,
 ) -> Generator[Tuple[Paragraph, Paragraph]]:
     left = await LawVersion.get(left_version_id, fetch_links=True)
     if left is None:

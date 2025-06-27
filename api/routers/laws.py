@@ -1,3 +1,4 @@
+from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 
 from db.models import Law
@@ -33,7 +34,7 @@ async def get_laws(page: int = 1, limit: int = 100):
 
 
 @router.get("/{law_id}", response_model=LawDetailProjection)
-async def get_law(law_id: str):
+async def get_law(law_id: PydanticObjectId):
     law = await Law.get(
         law_id, fetch_links=True, nesting_depth=1, projection_model=LawDetailProjection
     )
