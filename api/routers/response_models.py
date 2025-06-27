@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Optional, List
+from typing import List
 
 from beanie import PydanticObjectId
 from bson import DBRef
@@ -8,9 +8,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 
 class ProjectionModel(BaseModel):
-    id: Optional[PydanticObjectId] = Field(
-        alias="_id", serialization_alias="id", default=None
-    )
+    id: PydanticObjectId = Field(alias="_id", serialization_alias="id")
     model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,
@@ -31,10 +29,6 @@ class LawListProjection(ProjectionModel):
     name: str
     short_title: str | None = None
     long_title: str | None = None
-
-
-class PaginatedLawCollection(PaginatedCollection):
-    laws: List[LawListProjection]
 
 
 class LawVersionListProjection(ProjectionModel):
