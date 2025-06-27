@@ -1,10 +1,11 @@
+from typing import List
+
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 
 from db.models import Law
 from routers.response_models import (
     LawListProjection,
-    PaginatedLawCollection,
     LawDetailProjection,
 )
 
@@ -16,21 +17,11 @@ router = APIRouter(
 
 
 @router.get(
-    "/",
-    response_description="List of laws",
-    response_model=PaginatedLawCollection,
+    "/", response_description="List of laws", response_model=List[LawListProjection]
 )
-async def get_laws(page: int = 1, limit: int = 100):
-    skip = (page - 1) * limit
-    laws = (
-        await Law.find_all()
-        .skip(skip)
-        .limit(limit)
-        .project(LawListProjection)
-        .to_list()
-    )
-    total = await Law.count()
-    return PaginatedLawCollection(laws=laws, total=total, page=page, limit=limit)
+async def get_laws():
+    laws = await Law.find_all().project(LawListProjection).to_list()
+    return laws
 
 
 @router.get("/{law_id}", response_model=LawDetailProjection)
