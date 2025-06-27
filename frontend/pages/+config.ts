@@ -10,8 +10,8 @@ export default {
   Layout,
 
   // https://vike.dev/head-tags
-  title: "My Vike App",
-  description: "Demo showcasing Vike",
+  title: "German Law Diff",
+  description: "Show differences between versions of German laws",
 
   extends: vikeVue as typeof vikeVue,
 } satisfies Config;
