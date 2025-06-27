@@ -9,7 +9,6 @@ from rq import Queue
 
 from db.connection import close_db, init_db
 from dependencies import get_queue
-from laws.repo import clone_repo, repo_exists
 from routers import diff, laws, paragraphs
 from worker.tasks import run_import
 
@@ -22,8 +21,6 @@ logging.basicConfig(
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    if not repo_exists():
-        clone_repo()
     mongo_client = await init_db()
 
     yield
@@ -44,7 +41,7 @@ app.include_router(diff.router)
 
 @app.post("/import", status_code=status.HTTP_202_ACCEPTED)
 async def start_work(queue: Annotated[Queue, Depends(get_queue)]):
-    queue.enqueue(run_import)
+    queue.enqueue(run_import, job_timeout="3h")
     return {"message": "Work started successfully"}
 
 
