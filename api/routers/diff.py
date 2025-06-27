@@ -25,10 +25,7 @@ async def get_matching_paragraphs(
     if right is None:
         raise HTTPException(status_code=404, detail="Right version not found")
     return (
-        (left, right)
-        for left in left.paragraphs
-        for right in right.paragraphs
-        if left.same_as(right)
+        (lp, rp) for lp in left.paragraphs for rp in right.paragraphs if lp.same_as(rp)
     )
 
 
