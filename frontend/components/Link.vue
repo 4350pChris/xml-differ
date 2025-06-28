@@ -1,5 +1,5 @@
 <template>
-  <a :class="{ active: isActive }">
+  <a class="px-1 py-2 hover:bg-gray-300 transition-colors" :class="{ 'bg-gray-300': isActive }">
     <slot />
   </a>
 </template>
@@ -16,12 +16,3 @@ const isActive = computed(() => {
 });
 </script>
 
-<style scoped>
-a {
-  padding: 2px 10px;
-  margin-left: -10px;
-}
-a.active {
-  background-color: #eee;
-}
-</style>
