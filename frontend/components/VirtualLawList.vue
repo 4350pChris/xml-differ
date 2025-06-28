@@ -2,10 +2,9 @@
 import { useData } from "vike-vue/useData";
 import { Data } from "../pages/+data";
 import { computed, ref } from "vue";
-import { useVirtualizer } from "@tanstack/vue-virtual";
+import { useWindowVirtualizer } from "@tanstack/vue-virtual";
 import Link from "./Link.vue";
 
-defineProps<{ fullPage?: boolean }>();
 const data = useData<Data>();
 
 const laws = data.laws.map((law) => ({
@@ -13,18 +12,15 @@ const laws = data.laws.map((law) => ({
   url: `/law/${law.id}`,
 }));
 
-const parentRef = ref<HTMLElement | null>(null);
-
 const rowVirtualizerOptions = computed(() => {
   return {
     count: laws.length,
-    getScrollElement: () => parentRef.value,
     estimateSize: () => 40,
     overscan: 5,
   };
 });
 
-const rowVirtualizer = useVirtualizer(rowVirtualizerOptions);
+const rowVirtualizer = useWindowVirtualizer(rowVirtualizerOptions);
 
 const virtualRows = computed(() => rowVirtualizer.value.getVirtualItems());
 
@@ -42,28 +38,20 @@ const measureElement = (el: HTMLElement | undefined) => {
 </script>
 
 <template>
-  <div ref="parentRef" class="overflow-y-auto w-full" :style="{ flex: 1 }">
+  <div class="relative w-full" :style="{ height: `${totalSize}px` }">
     <div
-      class="relative w-full rounded-box px-2"
-      :style="{ height: `${(totalSize * 100) / (parentRef?.offsetHeight || 1)}%` }"
+      v-for="virtualRow in virtualRows"
+      :key="virtualRow.index"
+      :ref="measureElement"
+      class="absolute top-0 left-0 w-full"
+      :data-index="virtualRow.index"
+      :style="{
+        transform: `translateY(${virtualRow.start}px)`,
+      }"
     >
-      <div
-        class="absolute top-0 left-0 w-full"
-        :style="{
-          transform: `translateY(${virtualRows[0]?.start ?? 0}px)`,
-        }"
-      >
-        <div
-          v-for="virtualRow in virtualRows"
-          :key="virtualRow.index"
-          :ref="measureElement"
-          :data-index="virtualRow.index"
-        >
-          <Link :href="laws[virtualRow.index].url">
-            <slot :law="laws[virtualRow.index]">{{ laws[virtualRow.index].name }}</slot>
-          </Link>
-        </div>
-      </div>
+      <Link :href="laws[virtualRow.index].url">
+        <slot :law="laws[virtualRow.index]">{{ laws[virtualRow.index].name }}</slot>
+      </Link>
     </div>
   </div>
 </template>
