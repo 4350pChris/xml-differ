@@ -1,6 +1,11 @@
 <template>
-  <div id="sidebar" class="p-5 flex flex-col shrink-0 border-r-2 border-r-gray-200">
-    <slot />
+  <div class="drawer-side z-40">
+    <label for="drawer" class="drawer-overlay" aria-label="Close menu"></label>
+    <aside class="bg-base-100 min-h-screen w-80">
+      <slot />
+    </aside>
   </div>
 </template>
-<script setup lang="ts"></script>
+
+<script setup lang="ts">
+</script>

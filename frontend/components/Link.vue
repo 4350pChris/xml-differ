@@ -1,5 +1,5 @@
 <template>
-  <a class="px-1 py-2 hover:bg-gray-300 transition-colors" :class="{ 'bg-gray-300': isActive }">
+  <a :class="{ 'menu-active': isActive }">
     <slot />
   </a>
 </template>

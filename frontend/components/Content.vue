@@ -1,12 +1,13 @@
 <template>
-  <div id="page-container">
-    <div id="page-content" class="p-5 pb-12 min-h-screen">
-      <slot />
-    </div>
+  <div id="page-content" class="drawer-content">
+    <Navbar />
+    <slot />
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Navbar from "./Navbar.vue";
+</script>
 
 <style>
 /* Page Transition Animation */
