@@ -1,4 +1,5 @@
 import vikeVue from "vike-vue/config";
+import vikeVueQuery from "vike-vue-query/config";
 import type { Config } from "vike/types";
 import Layout from "../layouts/LayoutDefault.vue";
 
@@ -13,5 +14,5 @@ export default {
   title: "German Law Diff",
   description: "Show differences between versions of German laws",
 
-  extends: vikeVue as typeof vikeVue,
+  extends: [vikeVue as typeof vikeVue, vikeVueQuery as typeof vikeVueQuery],
 } satisfies Config;
