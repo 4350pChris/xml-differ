@@ -4,8 +4,8 @@
     <Content><slot /></Content>
     <Sidebar>
       <ul class="menu w-full rounded-box px-2">
-        <li>
-          <Link v-for="law in data.laws" :key="law.id" :href="`/law/${law.id}`">
+        <li v-for="law in laws" :key="law.id">
+          <Link :href="law.url">
             {{ law.name }}
           </Link>
         </li>
@@ -16,13 +16,11 @@
 
 <script lang="ts" setup>
 import Content from "../components/Content.vue";
-import Link from "../components/Link.vue";
 import Sidebar from "../components/Sidebar.vue";
-import {useData} from "vike-vue/useData";
-import {Data} from "../pages/+data";
-import {ref} from "vue";
+import Link from "../components/Link.vue";
+import { useLawList } from "../composables/useLawList";
 
-const data = useData<Data>();
+const { laws } = useLawList();
 </script>
 
 <style>
