@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useData } from "vike-vue/useData";
-import { Data } from "../pages/+data";
-import { computed, ref } from "vue";
+import { Data } from "../pages/index/+data";
+import { computed } from "vue";
 import { useWindowVirtualizer } from "@tanstack/vue-virtual";
 import Link from "./Link.vue";
 

@@ -1,4 +1,4 @@
-import { getLawsLawsGet } from "../client";
+import { getLawsLawsGet } from "../../client";
 import { render } from "vike/abort";
 
 export type Data = Awaited<ReturnType<typeof data>>;
