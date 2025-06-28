@@ -36,7 +36,7 @@ class LawVersionListProjection(ProjectionModel):
 
 
 class LawDetailProjection(LawListProjection):
-    versions: List[LawVersionListProjection] = Field(default_factory=list)
+    versions: List[LawVersionListProjection]
 
 
 class LawVersionDetailProjection(ProjectionModel):
