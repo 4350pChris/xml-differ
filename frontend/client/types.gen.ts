@@ -233,6 +233,47 @@ export type MoveNode = {
     position: number;
 };
 
+/**
+ * PaginatedParagraphCollection
+ */
+export type PaginatedParagraphCollection = {
+    /**
+     * Total
+     */
+    total: number;
+    /**
+     * Page
+     */
+    page: number;
+    /**
+     * Limit
+     */
+    limit: number;
+    /**
+     * Paragraphs
+     */
+    paragraphs: Array<ParagraphProjection>;
+};
+
+/**
+ * ParagraphProjection
+ */
+export type ParagraphProjection = {
+    id: PydanticObjectId;
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Content
+     */
+    content: string;
+};
+
 export type PydanticObjectId = string;
 
 /**
@@ -441,8 +482,10 @@ export type GetParagraphsVersionsVersionIdParagraphsGetResponses = {
     /**
      * List of paragraphs
      */
-    200: unknown;
+    200: PaginatedParagraphCollection;
 };
+
+export type GetParagraphsVersionsVersionIdParagraphsGetResponse = GetParagraphsVersionsVersionIdParagraphsGetResponses[keyof GetParagraphsVersionsVersionIdParagraphsGetResponses];
 
 export type GetDiffDiffLeftVersionIdRightVersionIdGetData = {
     body?: never;
