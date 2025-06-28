@@ -1,5 +1,5 @@
 <template>
-  <div id="page-content" class="drawer-content">
+  <div id="page-content" class="drawer-content flex flex-col h-full">
     <Navbar />
     <slot />
   </div>
