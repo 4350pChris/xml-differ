@@ -44,7 +44,7 @@
 
     <!-- If any major paragraph element is inside a diff tag, put the markup
         around the entire paragraph. -->
-    <xsl:template match="p|h1|h2|h3|h4|h5|h6">
+    <xsl:template match="P|h1|h2|h3|h4|h5|h6">
         <xsl:choose>
             <xsl:when test="ancestor-or-self::*[@diff:insert]">
                 <xsl:copy>
@@ -65,7 +65,7 @@
     </xsl:template>
 
     <!-- Put diff markup in marked paragraph formatting tags. -->
-    <xsl:template match="span|b|i|u|strike|sub|sup">
+    <xsl:template match="span|B|I|U|strike|SUB|SUP">
         <xsl:choose>
             <xsl:when test="@diff:insert">
                 <xsl:copy>
@@ -96,7 +96,7 @@
     </xsl:template>
 
     <!-- Put diff markup into pseudo-paragraph tags, if they act as paragraph. -->
-    <xsl:template match="li|th|td">
+    <xsl:template match="li|th|td|LA">
         <xsl:variable name="localParas" select="para|h1|h2|h3|h4|h5|h6" />
         <xsl:choose>
             <xsl:when test="not($localParas) and ancestor-or-self::*[@diff:insert]">

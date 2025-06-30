@@ -17,6 +17,25 @@ class HTMLFormatter(formatting.XMLFormatter):
 
 class XmlToHtmlDiffStrategy(DiffStrategy):
     def __call__(self, left: ET._Element, right: ET._Element) -> str:
-        formatter = HTMLFormatter()
-        edits = xmldiff_main.diff_trees(left, right, formatter=formatter)
+        formatter = HTMLFormatter(
+            text_tags=("entry", "LA", "P"),
+            formatting_tags=(
+                "B",
+                "U",
+                "I",
+                "SP",
+                "small",
+                "SUP",
+                "SUB",
+                "strike",
+                "em",
+                "super",
+                "link",
+                "a",
+                "span",
+            ),
+        )
+        edits = xmldiff_main.diff_trees(
+            left, right, formatter=formatter, diff_options={"fast_match": True}
+        )
         return edits.__str__()

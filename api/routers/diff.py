@@ -61,7 +61,7 @@ async def get_diff(
         Generator[Tuple[Paragraph, Paragraph]], Depends(get_matching_paragraphs)
     ],
     render: bool = True,
-):
+) -> List[str] | List[Diff]:
     if not render:
         return handle_json_diff(get_matching_paragraphs)
     else:
