@@ -1,24 +1,13 @@
 from pathlib import Path
 
 from xmldiff import formatting
-from xmldiff import main as xmldiff_main
 import lxml.etree as ET
-
-from diff.types import DiffStrategy
 
 
 class HTMLFormatter(formatting.XMLFormatter):
-    def render(self, result):
-        with (Path(__file__).parent / "htmlformatter.xslt").open() as f:
-            xslt_template = ET.fromstring(f.read())
-            transform = ET.XSLT(xslt_template)
-            return super(HTMLFormatter, self).render(transform(result))
-
-
-class XmlToHtmlDiffStrategy(DiffStrategy):
-    def __call__(self, left: ET._Element, right: ET._Element) -> str:
-        formatter = HTMLFormatter(
-            text_tags=("entry", "LA", "P"),
+    def __init__(self):
+        super().__init__(
+            text_tags=("entry", "LA"),
             formatting_tags=(
                 "B",
                 "U",
@@ -35,7 +24,9 @@ class XmlToHtmlDiffStrategy(DiffStrategy):
                 "span",
             ),
         )
-        edits = xmldiff_main.diff_trees(
-            left, right, formatter=formatter, diff_options={"fast_match": True}
-        )
-        return edits.__str__()
+
+    def render(self, result):
+        with (Path(__file__).parent / "htmlformatter.xslt").open() as f:
+            xslt_template = ET.fromstring(f.read())
+            transform = ET.XSLT(xslt_template)
+            return super(HTMLFormatter, self).render(transform(result))

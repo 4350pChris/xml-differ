@@ -4,11 +4,8 @@ from typing import Annotated, List, Generator, Tuple
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException, Depends
 
-from diff.differ import diff_files
-from diff.formatter import XmlToHtmlDiffStrategy
-from diff.types import Diff
+from diff.differ import diff_files, XmlToHtmlDiffStrategy
 from db.models import LawVersion, Paragraph
-from diff.xmldiff_strat import XmldiffStrategy
 
 router = APIRouter(
     prefix="/diff",
@@ -32,20 +29,6 @@ async def get_matching_paragraphs(
     )
 
 
-def handle_json_diff(
-    matching_paragraphs: Generator[Tuple[Paragraph, Paragraph]],
-) -> List[Diff]:
-    diff = partial(diff_files, XmldiffStrategy())
-    return [
-        Diff(
-            left_index=left.index,
-            right_index=right.index,
-            edits=diff(left.content, right.content),
-        )
-        for left, right in matching_paragraphs
-    ]
-
-
 def handle_html_diff(
     matching_paragraphs: Generator[Tuple[Paragraph, Paragraph]],
 ) -> List[str]:
@@ -57,12 +40,8 @@ def handle_html_diff(
     "/{left_version_id}/{right_version_id}", response_description="Diff endpoint"
 )
 async def get_diff(
-    get_matching_paragraphs: Annotated[
+    matching_paragraphs: Annotated[
         Generator[Tuple[Paragraph, Paragraph]], Depends(get_matching_paragraphs)
     ],
-    render: bool = True,
-) -> List[str] | List[Diff]:
-    if not render:
-        return handle_json_diff(get_matching_paragraphs)
-    else:
-        return handle_html_diff(get_matching_paragraphs)
+) -> List[str]:
+    return handle_html_diff(matching_paragraphs)
