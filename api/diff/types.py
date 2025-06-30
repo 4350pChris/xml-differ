@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from collections.abc import Iterable
 from dataclasses import dataclass
 
 from lxml import etree
@@ -115,5 +114,5 @@ class Diff:
 
 class DiffStrategy(ABC):
     @abstractmethod
-    def __call__(self, left: etree._Element, right: etree._Element) -> Iterable[Edit]:
+    def __call__(self, left: etree._Element, right: etree._Element):
         raise NotImplementedError("Subclasses should implement this method.")
