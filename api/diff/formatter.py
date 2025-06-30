@@ -2,6 +2,7 @@ from pathlib import Path
 
 from xmldiff import formatting
 import lxml.etree as ET
+from xmldiff.formatting import WS_BOTH
 
 
 class HTMLFormatter(formatting.XMLFormatter):
@@ -22,6 +23,7 @@ class HTMLFormatter(formatting.XMLFormatter):
                 "NB",
                 "noindex",
             ),
+            normalize=WS_BOTH,
         )
 
     def render(self, result):
