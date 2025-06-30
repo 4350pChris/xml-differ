@@ -9,19 +9,18 @@ class HTMLFormatter(formatting.XMLFormatter):
         super().__init__(
             text_tags=("entry", "LA"),
             formatting_tags=(
+                "BR",
                 "B",
                 "U",
                 "I",
+                "F",
                 "SP",
                 "small",
                 "SUP",
                 "SUB",
-                "strike",
-                "em",
-                "super",
-                "link",
-                "a",
-                "span",
+                "FnR",
+                "NB",
+                "noindex",
             ),
         )
 
