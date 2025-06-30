@@ -11,11 +11,11 @@ const right = ref<string>();
 </script>
 
 <template>
-  <div class="flex items-center justify-center pb-2 gap-4">
-    <div>
+  <div>
+    <div class="flex items-center justify-center pb-2 gap-4">
       <LawVersionSelector v-model="left" legend="Linke Version" :versions="law.versions" />
       <LawVersionSelector v-model="right" legend="Rechte Version" :versions="law.versions" />
-      <ParagraphsViewer v-if="right" :version-id="right" />
     </div>
+    <ParagraphsViewer v-if="right && left" :left :right />
   </div>
 </template>

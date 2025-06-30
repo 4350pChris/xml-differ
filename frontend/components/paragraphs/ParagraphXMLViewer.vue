@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ParagraphProjection } from "../../client";
-import { useParseParagraphXML } from "../../composables/useParseParagraphXML";
-import ParagraphNode from "./ParagraphNode.vue";
+import { computed } from "vue";
 
-const props = defineProps<{ paragraph: ParagraphProjection }>();
+const props = defineProps<{ content: string }>();
 
-const { parsed } = useParseParagraphXML(() => props.paragraph.content);
+const html = computed(() => {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(props.content, "application/xml");
+  return xmlDoc.documentElement.innerHTML;
+});
 </script>
 
 <template>
-  <div>
-    <h2 class="text-lg font-bold">{{ paragraph.title }}</h2>
-    <ParagraphNode :node="parsed[0].norm[1].textdaten[0].text[0].Content" />
-  </div>
+  <div v-html="html"></div>
 </template>
 
 <style>
@@ -23,5 +22,25 @@ dl {
 }
 dl > dt {
   font-weight: bold;
+}
+
+enbez {
+  margin-inline: 0.5rem;
+}
+
+[style="DiffInsert"],
+.diff-insert {
+  text-decoration: none;
+  background-color: #d4f8d4;
+  border: 1px solid #b2e0b2;
+  padding: 0.3rem;
+}
+
+[style="DiffDelete"],
+.diff-delete {
+  text-decoration: none;
+  background-color: #f8d4d4;
+  border: 1px solid #e0b2b2;
+  padding: 0.3rem;
 }
 </style>
