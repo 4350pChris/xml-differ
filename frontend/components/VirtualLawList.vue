@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { useData } from "vike-vue/useData";
-import { Data } from "../pages/index/+data";
 import { computed } from "vue";
 import { useWindowVirtualizer } from "@tanstack/vue-virtual";
 import Link from "./Link.vue";
+import { useAllLaws } from "../composables/useAllLaws";
 
-const data = useData<Data>();
+const { data } = useAllLaws();
 
-const laws = data.laws.map((law) => ({
-  ...law,
-  url: `/law/${law.id}`,
-}));
+const laws = computed(() =>
+  (data.value ?? []).map((law) => ({
+    ...law,
+    url: `/law/${law.id}`,
+  })),
+);
 
 const rowVirtualizerOptions = computed(() => {
   return {
-    count: laws.length,
+    count: laws.value.length,
     estimateSize: () => 40,
     overscan: 5,
   };
