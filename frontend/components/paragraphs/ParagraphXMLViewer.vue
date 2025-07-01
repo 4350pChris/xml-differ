@@ -15,6 +15,22 @@ const html = computed(() => {
 </template>
 
 <style scoped>
+:deep(.S4) {
+  margin-left: 0.5rem;
+}
+
+:deep(.S3) {
+  margin-left: 1rem;
+}
+
+:deep(.S2) {
+  margin-left: 1.5rem;
+}
+
+:deep(.S1) {
+  margin-left: 2rem;
+}
+
 :deep(dl) {
   display: grid;
   grid-template-columns: minmax(0, auto) 1fr;
