@@ -18,7 +18,7 @@ const { data: diff, status } = useQuery(queryOptions);
 </script>
 
 <template>
-  <p v-if="status === 'pending'">Loading...</p>
+  <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
   <p v-else-if="status === 'error'">Error!</p>
   <div v-else class="space-y-4">
     <ParagraphXMLViewer v-for="(content, i) in diff" :key="i" :content />
