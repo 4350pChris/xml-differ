@@ -45,14 +45,14 @@ const html = computed(() => {
   margin-inline: 0.5rem;
 }
 
-:deep([style="DiffInsert"], .diff-insert) {
+:deep(.diff-insert) {
   text-decoration: none;
   background-color: #d4f8d4;
   border: 1px solid #b2e0b2;
   padding: 0.3rem;
 }
 
-:deep([style="DiffDelete"], .diff-delete) {
+:deep(.diff-del) {
   text-decoration: none;
   background-color: #f8d4d4;
   border: 1px solid #e0b2b2;
