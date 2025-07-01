@@ -121,6 +121,14 @@
         </xsl:choose>
     </xsl:template>
 
+    <!-- GII laws include Title elements, which are not valid HTML -->
+    <xsl:template match="Title">
+        <p>
+            <xsl:copy-of select="@Class"/>
+            <xsl:apply-templates/>
+        </p>
+    </xsl:template>
+
 
     <!-- =====[ Boilerplate ]=============================================== -->
 
