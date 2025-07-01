@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import ParagraphXMLViewer from "./ParagraphXMLViewer.vue";
-import { computed } from "vue";
+import { computed, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
+import MoveChangeButtons from "./MoveChangeButtons.vue";
 
 const props = defineProps<{ left: string; right: string }>();
 const queryOptions = computed(() =>
@@ -15,12 +16,16 @@ const queryOptions = computed(() =>
 );
 
 const { data: diff, status } = useQuery(queryOptions);
+const diffEl = useTemplateRef<HTMLElement>("diffParent");
 </script>
 
 <template>
   <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
   <p v-else-if="status === 'error'">Error!</p>
-  <div v-else class="space-y-4">
-    <ParagraphXMLViewer v-for="(content, i) in diff" :key="i" :content />
-  </div>
+  <template v-else>
+    <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
+    <div ref="diffParent" :key="`${props.left}-${props.right}`" class="space-y-4">
+      <ParagraphXMLViewer v-for="(content, i) in diff" :key="i" :content />
+    </div>
+  </template>
 </template>
