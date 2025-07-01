@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useAllLaws } from "../composables/useAllLaws";
-import { computed, ref } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import LawList from "./LawList.vue";
+import { unrefElement, useMagicKeys, whenever } from "@vueuse/core";
 
 const { data: laws } = useAllLaws();
 const searchQuery = ref("");
@@ -16,6 +17,14 @@ const filteredLaws = computed(() => {
       (law.long_title && law.long_title.toLowerCase().includes(query)),
   );
 });
+
+const inputRef = useTemplateRef<HTMLInputElement>("search");
+const keys = useMagicKeys();
+whenever(keys.cmd_K, () => {
+  const el = unrefElement(inputRef);
+  el?.focus();
+  el?.select();
+});
 </script>
 
 <template>
@@ -28,6 +37,7 @@ const filteredLaws = computed(() => {
         </g>
       </svg>
       <input
+        ref="search"
         v-model="searchQuery"
         type="search"
         spellcheck="false"
