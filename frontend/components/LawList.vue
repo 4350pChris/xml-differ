@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, onServerPrefetch } from "vue";
+import { computed } from "vue";
 import Link from "./Link.vue";
-import { useAllLaws } from "../composables/useAllLaws";
+import { LawListProjection } from "../client";
 
-const { data, suspense } = useAllLaws();
-
-onServerPrefetch(suspense);
+const props = defineProps<{
+  laws: LawListProjection[];
+}>();
 
 const laws = computed(() =>
-  (data.value ?? []).map((law) => ({
+  props.laws.map((law) => ({
     ...law,
     url: `/law/${law.id}`,
   })),
@@ -16,9 +16,9 @@ const laws = computed(() =>
 </script>
 
 <template>
-  <ul class="flex flex-col divide-y divide-gray-200">
-    <li v-for="law in laws" :key="law.id" class="py-2 px-4 hover:bg-gray-100">
-      <Link class="" :href="`/law/${law.id}`">
+  <ul class="flex flex-col divide-y divide-gray-200 bg-base-100">
+    <li v-for="law in laws" :key="law.id">
+      <Link class="w-full inline-block py-2 px-4 hover:bg-gray-100" :href="`/law/${law.id}`">
         <slot :law="law">{{ law.name }}</slot>
       </Link>
     </li>
