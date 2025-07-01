@@ -22,9 +22,9 @@ const isRootPath = computed(() => pageContext.urlPathname === "/");
             <path fill="currentColor" d="M17.77 3.77L16 2L6 12l10 10l1.77-1.77L9.54 12z" />
           </svg>
         </Link>
-        <h1 class="text-2xl">{{ title }}</h1>
+        <h1 class="text-2xl max-md:hidden">{{ title }}</h1>
       </div>
-      <LawSearch />
+      <LawSearch class="flex-1" />
     </div>
   </div>
 </template>

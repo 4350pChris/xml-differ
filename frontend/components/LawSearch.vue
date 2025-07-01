@@ -28,8 +28,8 @@ whenever(keys.cmd_K, () => {
 </script>
 
 <template>
-  <div class="dropdown">
-    <label class="input">
+  <div class="dropdown max-w-lg">
+    <label class="input w-full">
       <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
           <circle cx="11" cy="11" r="8"></circle>
@@ -51,7 +51,7 @@ whenever(keys.cmd_K, () => {
     <LawList
       v-if="filteredLaws"
       tabindex="0"
-      class="dropdown-content rounded-box z-1 w-64 max-h-96 overflow-y-auto p-2 shadow-sm"
+      class="dropdown-content rounded-box z-1 w-full max-h-96 overflow-y-auto p-2 shadow-sm"
       :laws="filteredLaws"
     />
   </div>
