@@ -11,33 +11,32 @@ const html = computed(() => {
 </script>
 
 <template>
-  <div v-html="html"></div>
+  <div class="[&_metadaten]:font-bold" v-html="html"></div>
 </template>
 
-<style>
-dl {
+<style scoped>
+:deep(dl) {
   display: grid;
   grid-template-columns: minmax(0, auto) 1fr;
   grid-gap: 1rem;
 }
-dl > dt {
+
+:deep(dl > dt) {
   font-weight: bold;
 }
 
-enbez {
+:deep(enbez) {
   margin-inline: 0.5rem;
 }
 
-[style="DiffInsert"],
-.diff-insert {
+:deep([style="DiffInsert"], .diff-insert) {
   text-decoration: none;
   background-color: #d4f8d4;
   border: 1px solid #b2e0b2;
   padding: 0.3rem;
 }
 
-[style="DiffDelete"],
-.diff-delete {
+:deep([style="DiffDelete"], .diff-delete) {
   text-decoration: none;
   background-color: #f8d4d4;
   border: 1px solid #e0b2b2;
