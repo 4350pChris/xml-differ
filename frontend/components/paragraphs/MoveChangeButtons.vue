@@ -14,7 +14,17 @@ const diffs = computed(() => {
   return [];
 });
 
-const { next, prev, state, index } = useCycleList(diffs);
+const { next, prev, state, index: _index, go } = useCycleList(diffs);
+
+const index = computed({
+  get: () => _index.value + 1, // +1 for 1-based index
+  set: (value: number) => {
+    if (value < 1 || value > diffs.value.length) {
+      return;
+    }
+    go(value - 1); // -1 for 0-based index
+  },
+});
 
 const visibilityClassList = ["animate-pulse", "outline", "outline-blue-500"];
 
@@ -24,7 +34,6 @@ watch(state, (newCurrent, oldCurrent) => {
   }
   oldCurrent.classList.remove("current");
   newCurrent.classList.add("current", ...visibilityClassList);
-  newCurrent.classList.add("animate-pulse");
   newCurrent.scrollIntoView({ behavior: "smooth" });
   pulseTimeout.start(newCurrent);
 });
@@ -48,7 +57,15 @@ const pulseTimeout = useTimeoutFn((node: HTMLElement | undefined) => {
         <path fill="currentColor" d="m20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8z" />
       </svg>
     </button>
-    <span class="join-item self-center-safe px-2"> {{ index + 1 }} / {{ diffs.length }} </span>
+    <input
+      v-model.number="index"
+      min="1"
+      :max="diffs.length"
+      type="number"
+      title="Gehe zu Änderung"
+      class="input input-bordered join-item w-20"
+    />
+    <span class="join-item self-center-safe px-2"> / {{ diffs.length }} </span>
   </div>
 </template>
 
