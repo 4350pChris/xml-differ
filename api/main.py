@@ -6,10 +6,12 @@ import uvicorn
 from fastapi import FastAPI, status
 from fastapi.params import Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 from rq import Queue
 
 from db.connection import close_db, init_db
-from dependencies import get_queue
+from dependencies import get_queue, get_redis_connection
 from routers import diff, laws, paragraphs
 from worker.tasks import run_import
 
@@ -21,8 +23,10 @@ logging.basicConfig(
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     mongo_client = await init_db()
+    redis_conn = get_redis_connection()
+    FastAPICache.init(RedisBackend(redis_conn), prefix="fastapi-cache")
 
     yield
 

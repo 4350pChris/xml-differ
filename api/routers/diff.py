@@ -3,6 +3,7 @@ from typing import Annotated, List, Generator, Tuple
 
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException, Depends
+from fastapi_cache.decorator import cache
 
 from diff.differ import diff_files, XmlToHtmlDiffStrategy
 from db.models import LawVersion, Paragraph
@@ -39,6 +40,7 @@ def handle_html_diff(
 @router.get(
     "/{left_version_id}/{right_version_id}", response_description="Diff endpoint"
 )
+@cache(expire=3600)
 async def get_diff(
     matching_paragraphs: Annotated[
         Generator[Tuple[Paragraph, Paragraph]], Depends(get_matching_paragraphs)
