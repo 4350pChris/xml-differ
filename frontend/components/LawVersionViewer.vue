@@ -4,10 +4,10 @@ import LawVersionSelector from "./LawVersionSelector.vue";
 import { ref } from "vue";
 import ParagraphsViewer from "./paragraphs/ParagraphsViewer.vue";
 
-defineProps<{ law: LawDetailProjection }>();
+const props = defineProps<{ law: LawDetailProjection }>();
 
-const left = ref<string>();
-const right = ref<string>();
+const left = ref<string>(props.law.versions[0]?.id);
+const right = ref<string>(props.law.versions[props.law.versions.length - 1]?.id);
 </script>
 
 <template>
