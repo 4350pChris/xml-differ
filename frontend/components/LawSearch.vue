@@ -39,12 +39,14 @@ whenever(keys.cmd_K, () => {
       <input
         ref="search"
         v-model="searchQuery"
+        name="search"
         type="search"
         spellcheck="false"
         autocomplete="off"
         class="grow"
-        placeholder="Search"
+        placeholder="Gesetzessuche"
       />
+      <span class="sr-only">Gesetzessuche</span>
       <kbd class="kbd kbd-sm">⌘</kbd>
       <kbd class="kbd kbd-sm">K</kbd>
     </label>
