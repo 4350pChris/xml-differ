@@ -14,7 +14,7 @@ const diffs = computed(() => {
   return [];
 });
 
-const { next, prev, state } = useCycleList(diffs);
+const { next, prev, state, index } = useCycleList(diffs);
 
 const visibilityClassList = ["animate-pulse", "outline", "outline-blue-500"];
 
@@ -35,19 +35,20 @@ const pulseTimeout = useTimeoutFn((node: HTMLElement | undefined) => {
 </script>
 
 <template>
-  <div class="join">
-    <button class="btn btn-square" @click="prev()">
+  <div class="join bg-base-100 shadow-lg rounded-box">
+    <button class="btn btn-square btn-ghost join-item" title="Vorherige Änderung" @click="prev()">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
         <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
         <path fill="currentColor" d="m4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8z" />
       </svg>
     </button>
-    <button class="btn btn-square" @click="next()">
+    <button class="btn btn-square btn-ghost join-item" title="Nächste Änderung" @click="next()">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
         <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
         <path fill="currentColor" d="m20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8z" />
       </svg>
     </button>
+    <span class="join-item self-center-safe px-2"> {{ index + 1 }} / {{ diffs.length }} </span>
   </div>
 </template>
 
