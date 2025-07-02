@@ -1,4 +1,5 @@
 <template>
+  <h1 class="text-2xl mb-4">Gesetze</h1>
   <LawList :laws="laws ?? []">
     <template #default="{ law }">
       <div>{{ law.name }}</div>
