@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
-import { useWindowScroll } from "@vueuse/core";
+import { throttledRef, useWindowScroll } from "@vueuse/core";
 import ChangeIndicator, { ChangeType } from "../ChangeIndicator.vue";
 
 const props = defineProps<{
@@ -14,15 +14,17 @@ const headerElements = computed(() => {
   }
   return [];
 });
-const { y } = useWindowScroll();
-// const visibleElement = ref<HTMLElement>();
+const reverseHeaders = computed(() => [...headerElements.value.values()].reverse());
+const { y: _y } = useWindowScroll();
+const y = throttledRef(_y, 100);
 // find uppermost visible element in the viewport
 const visibleElement = computed(() => {
-  if (!props.parentElement) return null;
-  const elements = headerElements.value;
-  for (const el of elements) {
+  // trick to have this trigger when scrolling
+  if (!props.parentElement || y.value < 0) return null;
+  console.log("Checking visible element at scroll position:", y.value);
+  for (const el of reverseHeaders.value) {
     const rect = el.getBoundingClientRect();
-    if (rect.top >= 0 && rect.bottom <= y.value) {
+    if (rect.top <= 80) {
       return el.id;
     }
   }

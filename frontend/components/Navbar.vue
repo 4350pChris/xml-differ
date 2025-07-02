@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { usePageContext } from "vike-vue/usePageContext";
-import { getTitle } from "../pages/utils";
 import { computed } from "vue";
 import LawSearch from "./LawSearch.vue";
 
 const pageContext = usePageContext();
-const title = getTitle(pageContext);
 const isRootPath = computed(() => pageContext.urlPathname === "/");
 </script>
 
@@ -21,7 +19,6 @@ const isRootPath = computed(() => pageContext.urlPathname === "/");
             <path fill="currentColor" d="M17.77 3.77L16 2L6 12l10 10l1.77-1.77L9.54 12z" />
           </svg>
         </a>
-        <h1 class="text-2xl max-md:hidden">{{ title }}</h1>
       </div>
       <LawSearch class="flex-1" />
     </div>
