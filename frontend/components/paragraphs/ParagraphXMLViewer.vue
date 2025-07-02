@@ -41,7 +41,7 @@ const change = computed<ChangeType>(() => {
 </script>
 
 <template>
-  <h2 :id="id" class="font-bold scroll-mt-16 indicator" :data-change="change">
+  <h2 :id="id" class="font-bold scroll-mt-16 indicator max-w-full" :data-change="change">
     <ChangeIndicator :change="change" />
     <span>{{ title }}</span>
   </h2>
