@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { DOMParser } from "linkedom";
 import ChangeIndicator, { type ChangeType } from "../ChangeIndicator.vue";
 
 const props = defineProps<{ content: string }>();
 
 const xmlDoc = computed(() => {
   const parser = new DOMParser();
-  return parser.parseFromString(props.content, "application/xml");
+  return parser.parseFromString(props.content, "text/xml");
 });
 
 const metadataElement = computed(() => {

@@ -16,6 +16,7 @@
     "@vue/server-renderer": "^3.5.13",
     "@vueuse/core": "^13.4.0",
     "h3": "~1.15.0",
+    "linkedom": "^0.18.11",
     "serve-static": "^1.16.2",
     "unplugin-vue-markdown": "^28.3.0",
     "vike-vue": "^0.8.6",

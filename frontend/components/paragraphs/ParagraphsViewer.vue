@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ParagraphXMLViewer from "./ParagraphXMLViewer.vue";
-import { computed, useTemplateRef } from "vue";
+import { computed, onServerPrefetch, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import MoveChangeButtons from "./MoveChangeButtons.vue";
@@ -16,7 +16,8 @@ const queryOptions = computed(() =>
   }),
 );
 
-const { data: diff, status } = useQuery(queryOptions);
+const { data: diff, status, suspense } = useQuery(queryOptions);
+onServerPrefetch(suspense);
 const diffEl = useTemplateRef<HTMLElement>("diffParent");
 </script>
 
