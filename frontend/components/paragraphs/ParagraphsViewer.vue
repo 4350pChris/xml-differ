@@ -25,9 +25,9 @@ const diffEl = useTemplateRef<HTMLElement>("diffParent");
   <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
   <p v-else-if="status === 'error'">Error!</p>
   <template v-else>
-    <TableOfContents class="fixed top-16 bottom-0 left-0 w-16" :parent-element="diffEl" />
+    <TableOfContents class="not-prose fixed top-16 bottom-0 left-0 w-16" :parent-element="diffEl" />
     <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
-    <div ref="diffParent" :key="`${props.left}-${props.right}`" class="space-y-4">
+    <div ref="diffParent" :key="`${props.left}-${props.right}`">
       <ParagraphXMLViewer v-for="(content, i) in diff" :key="i" :content />
     </div>
   </template>

@@ -42,7 +42,7 @@ const change = computed<ChangeType>(() => {
 </script>
 
 <template>
-  <h2 :id="id" class="font-bold scroll-mt-16 indicator max-w-full" :data-change="change">
+  <h2 :id="id" class="scroll-mt-16 indicator max-w-full" :data-change="change">
     <ChangeIndicator :change="change" />
     <span>{{ title }}</span>
   </h2>
@@ -64,16 +64,6 @@ const change = computed<ChangeType>(() => {
 
 :deep(.S1) {
   margin-left: 2rem;
-}
-
-:deep(dl) {
-  display: grid;
-  grid-template-columns: minmax(0, auto) 1fr;
-  grid-gap: 1rem;
-}
-
-:deep(dl > dt) {
-  font-weight: bold;
 }
 
 :deep(enbez) {

@@ -27,10 +27,10 @@ onServerPrefetch(suspense);
     <template v-else-if="status === 'error'">
       <p>Error loading law details!</p>
     </template>
-    <template v-else-if="law">
-      <h1 class="text-2xl font-bold">{{ law.name }}</h1>
-      <p class="text-gray-700">{{ law.long_title ?? law.short_title }}</p>
+    <div v-else-if="law" class="prose mx-auto">
+      <h1>{{ law.name }}</h1>
+      <p>{{ law.long_title ?? law.short_title }}</p>
       <LawVersionViewer :law />
-    </template>
+    </div>
   </div>
 </template>
