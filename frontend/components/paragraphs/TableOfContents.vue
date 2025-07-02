@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useWindowScroll } from "@vueuse/core";
+import ChangeIndicator, { ChangeType } from "../ChangeIndicator.vue";
 
 const props = defineProps<{
   parentElement: HTMLElement | null;
 }>();
 
 // get all diff elements from the parent element
-const tocElements = computed(() => {
+const headerElements = computed(() => {
   if (props.parentElement) {
     return Array.from(props.parentElement.querySelectorAll<HTMLElement>("h2"));
   }
@@ -18,30 +19,73 @@ const { y } = useWindowScroll();
 // find uppermost visible element in the viewport
 const visibleElement = computed(() => {
   if (!props.parentElement) return null;
-  const elements = tocElements.value;
+  const elements = headerElements.value;
   for (const el of elements) {
     const rect = el.getBoundingClientRect();
     if (rect.top >= 0 && rect.bottom <= y.value) {
-      return el;
+      return el.id;
     }
   }
   return null;
 });
 
+const getChangeType = (val: string | undefined) => {
+  if (!val || val === "false") return false;
+  return val as ChangeType;
+};
+
+type TocItem = {
+  id: `toc-${string}`;
+  href: `#${string}`;
+  name: string;
+  change: ChangeType;
+};
+
 const toc = computed(() => {
-  return tocElements.value.map((el, index) => ({
-    name: el.textContent?.trim()?.split(" ").slice(0, 2).join(" ") || `Item ${index + 1}`,
-    id: el.id,
-    visible: visibleElement.value === el,
-  }));
+  const map = new Map<string, TocItem>();
+  headerElements.value.forEach((el, index) => {
+    map.set(el.id, {
+      id: `toc-${el.id}`,
+      href: `#${el.id}`,
+      name: el.textContent?.trim()?.split(" ").slice(0, 2).join(" ") || `Item ${index + 1}`,
+      change: getChangeType(el.dataset.change),
+    });
+  });
+  return map;
+});
+
+// if the corresponding toc element is not visible when the visible heading changes, scroll to it
+watch(visibleElement, (newVisible) => {
+  if (newVisible) {
+    const tocItem = toc.value.get(newVisible);
+    if (tocItem) {
+      // We use DOM manipulation here to save the overhead of keeping all refs in a list
+      const target = document.getElementById(tocItem.id);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }
 });
 </script>
 
 <template>
   <ol class="overflow-y-auto bg-base-100 shadow-sm">
-    <li v-for="item in toc" :key="item.id" class="truncate" :class="{ 'font-bold': item.visible }">
-      <a :href="`#${item.id}`" class="block px-2 py-1 hover:bg-base-200" :title="`Zu ${item.name} springen`">
-        {{ item.name }}
+    <li
+      v-for="[headingId, item] in toc.entries()"
+      :key="item.id"
+      :class="{ 'font-bold': visibleElement === headingId }"
+    >
+      <a
+        :id="item.id"
+        :href="item.href"
+        class="inline-flex w-full px-2 py-1 hover:bg-base-200"
+        :title="`Zu ${item.name} springen`"
+      >
+        <div class="indicator grow">
+          <ChangeIndicator :change="item.change" />
+          <span class="truncate">{{ item.name }}</span>
+        </div>
       </a>
     </li>
   </ol>

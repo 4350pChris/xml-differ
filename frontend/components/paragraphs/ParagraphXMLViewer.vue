@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import ChangeIndicator, { type ChangeType } from "../ChangeIndicator.vue";
 
 const props = defineProps<{ content: string }>();
 
@@ -25,14 +26,26 @@ const title = computed(() => {
     .join(" ");
 });
 
-const paragraph = computed(() => {
-  return metadataElement.value?.nextElementSibling?.innerHTML;
+const paragraphElement = computed(() => {
+  return metadataElement.value?.nextElementSibling;
+});
+
+const change = computed<ChangeType>(() => {
+  const deletions = paragraphElement.value?.querySelectorAll(".diff-del")?.length;
+  const additions = paragraphElement.value?.querySelectorAll(".diff-insert")?.length;
+
+  if (!deletions && !additions) return false;
+  if (deletions && additions) return "mixed";
+  return deletions ? "deletion" : "addition";
 });
 </script>
 
 <template>
-  <h2 :id="id" class="font-bold scroll-mt-16">{{ title }}</h2>
-  <div v-html="paragraph"></div>
+  <h2 :id="id" class="font-bold scroll-mt-16 indicator" :data-change="change">
+    <ChangeIndicator :change="change" />
+    <span>{{ title }}</span>
+  </h2>
+  <div v-html="paragraphElement?.innerHTML"></div>
 </template>
 
 <style scoped>
