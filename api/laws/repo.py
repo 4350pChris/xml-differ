@@ -14,7 +14,7 @@ local_path = Path(__file__).resolve().parent / "data"
 
 def clone_repo() -> Repo:
     logger.info(f"cloning repo: {repo_url} to {local_path}")
-    return Repo.clone_from(repo_url, local_path, branch="2019-06-10")
+    return Repo.clone_from(repo_url, local_path, branch="2022-10-18")
 
 
 def repo_exists() -> bool:

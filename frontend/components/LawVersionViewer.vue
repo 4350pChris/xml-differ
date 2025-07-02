@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import { LawDetailProjection } from "../client";
 import LawVersionSelector from "./LawVersionSelector.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import ParagraphsViewer from "./paragraphs/ParagraphsViewer.vue";
+import { useUrlSearchParams } from "@vueuse/core";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 
 const left = ref<string>(props.law.versions[0]?.id);
 const right = ref<string>(props.law.versions[props.law.versions.length - 1]?.id);
+const urlParams = useUrlSearchParams();
+
+watch(
+  [left, right],
+  ([newLeft, newRight]) => {
+    urlParams.left = newLeft;
+    urlParams.right = newRight;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
