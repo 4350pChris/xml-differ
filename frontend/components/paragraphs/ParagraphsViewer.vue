@@ -4,6 +4,7 @@ import { computed, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import MoveChangeButtons from "./MoveChangeButtons.vue";
+import TableOfContents from "./TableOfContents.vue";
 
 const props = defineProps<{ left: string; right: string }>();
 const queryOptions = computed(() =>
@@ -23,6 +24,7 @@ const diffEl = useTemplateRef<HTMLElement>("diffParent");
   <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
   <p v-else-if="status === 'error'">Error!</p>
   <template v-else>
+    <TableOfContents class="fixed top-16 bottom-0 left-0 w-16" :parent-element="diffEl" />
     <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
     <div ref="diffParent" :key="`${props.left}-${props.right}`" class="space-y-4">
       <ParagraphXMLViewer v-for="(content, i) in diff" :key="i" :content />

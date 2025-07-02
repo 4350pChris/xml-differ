@@ -19,7 +19,7 @@ onServerPrefetch(suspense);
 </script>
 
 <template>
-  <div v-if="law" class="p-4">
+  <div v-if="law" class="p-4 pl-20">
     <h1 class="text-2xl font-bold">{{ law.name }}</h1>
     <p class="text-gray-700">{{ law.long_title ?? law.short_title }}</p>
     <LawVersionViewer :law />

@@ -2,7 +2,6 @@
 import { usePageContext } from "vike-vue/usePageContext";
 import { getTitle } from "../pages/utils";
 import { computed } from "vue";
-import Link from "./Link.vue";
 import LawSearch from "./LawSearch.vue";
 
 const pageContext = usePageContext();
@@ -16,12 +15,12 @@ const isRootPath = computed(() => pageContext.urlPathname === "/");
   >
     <div class="navbar w-full py-0 gap-4">
       <div class="flex items-center gap-2">
-        <Link v-if="!isRootPath" class="btn btn-ghost text-xl" href="/">
+        <a v-if="!isRootPath" class="btn btn-ghost text-xl" href="/" title="Zu den Gesetzen">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
             <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
             <path fill="currentColor" d="M17.77 3.77L16 2L6 12l10 10l1.77-1.77L9.54 12z" />
           </svg>
-        </Link>
+        </a>
         <h1 class="text-2xl max-md:hidden">{{ title }}</h1>
       </div>
       <LawSearch class="flex-1" />

@@ -3,15 +3,36 @@ import { computed } from "vue";
 
 const props = defineProps<{ content: string }>();
 
-const html = computed(() => {
+const xmlDoc = computed(() => {
   const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(props.content, "application/xml");
-  return xmlDoc.documentElement.innerHTML;
+  return parser.parseFromString(props.content, "application/xml");
+});
+
+const metadataElement = computed(() => {
+  return xmlDoc.value.documentElement.firstElementChild;
+});
+
+const id = computed(() => {
+  return xmlDoc.value.documentElement.getAttribute("doknr") || "";
+});
+
+const title = computed(() => {
+  const titleElements = metadataElement.value?.querySelectorAll("enbez, titel");
+  if (!titleElements) return "Missing Title";
+  return Array.from(titleElements)
+    .map((el) => el.textContent?.trim())
+    .filter(Boolean)
+    .join(" ");
+});
+
+const paragraph = computed(() => {
+  return metadataElement.value?.nextElementSibling?.innerHTML;
 });
 </script>
 
 <template>
-  <div class="[&_metadaten]:font-bold" v-html="html"></div>
+  <h2 :id="id" class="font-bold scroll-mt-16">{{ title }}</h2>
+  <div v-html="paragraph"></div>
 </template>
 
 <style scoped>
