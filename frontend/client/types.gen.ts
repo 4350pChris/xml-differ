@@ -225,7 +225,12 @@ export type GetDiffDiffLeftVersionIdRightVersionIdGetData = {
         left_version_id: PydanticObjectId;
         right_version_id: PydanticObjectId;
     };
-    query?: never;
+    query?: {
+        /**
+         * Fast Match
+         */
+        fast_match?: boolean;
+    };
     url: '/diff/{left_version_id}/{right_version_id}';
 };
 
