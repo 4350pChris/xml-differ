@@ -1,8 +1,9 @@
 from functools import partial
-from typing import List
+from typing import List, Annotated
 
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
+from fastapi.params import Depends
 
 from diff.differ import diff_files, XmlToHtmlDiffStrategy, DifferOptions
 from db.models import LawVersion
@@ -20,7 +21,7 @@ router = APIRouter(
 async def get_diff(
     left_version_id: PydanticObjectId,
     right_version_id: PydanticObjectId,
-    options: DifferOptions,
+    options: Annotated[DifferOptions, Depends(DifferOptions)],
 ) -> List[str]:
     left = await LawVersion.get(left_version_id, fetch_links=True)
     if left is None:

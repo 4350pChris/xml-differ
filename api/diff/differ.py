@@ -1,17 +1,18 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Literal
 
 from lxml import etree as ET
-from pydantic import BaseModel
 from xmldiff import main as xmldiff_main
 
 from diff.formatter import HTMLFormatter
 
 
-class DifferOptions(BaseModel):
-    fast_match: bool = True
-    F: int = 0.5
-    ratio_mode: Literal["accurate", "fast", "faster"] = "fast"
+@dataclass
+class DifferOptions:
+    fast_match: bool
+    F: float
+    ratio_mode: Literal["accurate", "fast", "faster"]
 
 
 class DiffStrategy(ABC):
@@ -31,7 +32,7 @@ class XmlToHtmlDiffStrategy(DiffStrategy):
             left,
             right,
             formatter=formatter,
-            diff_options={**options, "ignored_attrs": ["Font", "Size"]},
+            diff_options={**options.__dict__, "ignored_attrs": ["Font", "Size"]},
         )
         return edits.__str__()
 
