@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { LawDetailProjection } from "../client";
-import { computed, onServerPrefetch, ref, watch } from "vue";
-import ParagraphsViewer from "./paragraphs/ParagraphsViewer.vue";
+import { computed, onServerPrefetch, ref, useTemplateRef, watch } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import DiffOptions, { type DifferOptions } from "./DiffOptions.vue";
 import { useUrlSearchParams } from "@vueuse/core";
 import { usePageContext } from "vike-vue/usePageContext";
+import MoveChangeButtons from "./paragraphs/MoveChangeButtons.vue";
+import ParagraphXMLViewer from "./paragraphs/ParagraphXMLViewer.vue";
+import TableOfContents from "./paragraphs/TableOfContents.vue";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 const urlParams = useUrlSearchParams();
@@ -14,6 +16,8 @@ const pageContext = usePageContext();
 const { search } = pageContext.urlParsed;
 const left = ref<string>(search.left ?? props.law.versions[0]?.id);
 const right = ref<string>(search.right ?? props.law.versions[props.law.versions.length - 1]?.id);
+
+const diffEl = useTemplateRef<HTMLElement>("diffParent");
 
 watch(
   [left, right],
@@ -63,6 +67,12 @@ onServerPrefetch(suspense);
     <p v-else-if="status === 'error'">
       Error! <code>{{ error }}</code>
     </p>
-    <ParagraphsViewer v-else-if="diff" :diff />
+    <template v-else-if="diff">
+      <TableOfContents class="not-prose fixed top-16 bottom-0 left-0 w-20 md:w-24 lg:w-28" :parent-element="diffEl" />
+      <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
+      <div ref="diffParent">
+        <ParagraphXMLViewer v-for="(content, i) in diff" :key="`${i}-${content.length}`" :content />
+      </div>
+    </template>
   </div>
 </template>
