@@ -4,12 +4,15 @@ import LawVersionSelector from "./LawVersionSelector.vue";
 import { ref, watch } from "vue";
 import ParagraphsViewer from "./paragraphs/ParagraphsViewer.vue";
 import { useUrlSearchParams } from "@vueuse/core";
+import { usePageContext } from "vike-vue/usePageContext";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 
-const left = ref<string>(props.law.versions[0]?.id);
-const right = ref<string>(props.law.versions[props.law.versions.length - 1]?.id);
 const urlParams = useUrlSearchParams();
+const pageContext = usePageContext();
+const { search } = pageContext.urlParsed;
+const left = ref<string>(search.left ?? props.law.versions[0]?.id);
+const right = ref<string>(search.right ?? props.law.versions[props.law.versions.length - 1]?.id);
 
 watch(
   [left, right],
