@@ -29,7 +29,7 @@ watch(
 );
 
 const options = ref<DifferOptions>({
-  fast_match: !!search.fast_match,
+  fast_match: search.fast_match ? search.fast_match === "true" : false,
   ratio_mode: (search.ratio_mode as "fast") ?? "fast",
   F: search.F ? parseFloat(search.F) : 0.5,
 });
