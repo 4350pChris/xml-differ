@@ -16,7 +16,7 @@ const props = defineProps<{
 
 const left = ref<string>(props.initial.left);
 const right = ref<string>(props.initial.right);
-const options = ref<DifferOptions>(props.initial.options);
+const options = ref<DifferOptions>({ ...props.initial.options });
 
 const emits = defineEmits<{
   submit: [versions: [string, string], options: DifferOptions];
