@@ -16,14 +16,14 @@ const props = defineProps<{
 
 const left = ref<string>(props.initial.left);
 const right = ref<string>(props.initial.right);
-const options = ref<DifferOptions>({ ...props.initial.options });
+const options = ref<DifferOptions>(props.initial.options);
 
 const emits = defineEmits<{
   submit: [versions: [string, string], options: DifferOptions];
 }>();
 
 const acceptChanges = () => {
-  emits("submit", [left.value, right.value], options.value);
+  emits("submit", [left.value, right.value], { ...options.value });
 };
 
 const modalEl = useTemplateRef<HTMLDialogElement>("modal");
@@ -46,7 +46,7 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
 
 <template>
   <button class="btn fixed bottom-4 left-24" @click="modalEl?.showModal()">open modal</button>
-  <dialog ref="modal" class="modal modal-bottom sm:modal-middle">
+  <dialog ref="modal" class="modal modal-bottom sm:modal-middle" @submit.stop>
     <div class="modal-box">
       <h3 class="text-lg font-bold">Optionen</h3>
       <LawVersionSelector v-model="left" legend="Alte Version" :versions="law.versions" />
