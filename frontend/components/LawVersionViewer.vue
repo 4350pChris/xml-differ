@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { LawDetailProjection } from "../client";
-import LawVersionSelector from "./LawVersionSelector.vue";
 import { computed, onServerPrefetch, ref, watch } from "vue";
 import ParagraphsViewer from "./paragraphs/ParagraphsViewer.vue";
-import { useUrlSearchParams } from "@vueuse/core";
-import { usePageContext } from "vike-vue/usePageContext";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
+import DiffOptions, { type DifferOptions } from "./DiffOptions.vue";
+import { useUrlSearchParams } from "@vueuse/core";
+import { usePageContext } from "vike-vue/usePageContext";
 
 const props = defineProps<{ law: LawDetailProjection }>();
-
 const urlParams = useUrlSearchParams();
 const pageContext = usePageContext();
 const { search } = pageContext.urlParsed;
@@ -25,38 +24,45 @@ watch(
   { immediate: true },
 );
 
+const options = ref<DifferOptions>({
+  fast_match: !!search.fast_match,
+  ratio_mode: (search.ratio_mode as "fast") ?? "fast",
+  F: search.F ? parseFloat(search.F) : 0.5,
+});
+
+watch(options, (newOptions) => {
+  Object.entries(newOptions).forEach(([key, value]) => {
+    urlParams[key] = value.toString();
+  });
+});
+
+const handleSubmit = (versions: [string, string], newOptions: DifferOptions) => {
+  left.value = versions[0];
+  right.value = versions[1];
+  options.value = newOptions;
+};
+
 const queryOptions = computed(() => {
-  console.log("Querying diff for versions:", left.value, right.value, "with fast match:", urlParams.fast);
   return getDiffDiffLeftVersionIdRightVersionIdGetOptions({
     path: {
       left_version_id: left.value,
       right_version_id: right.value,
     },
-    query: {
-      fast_match: !!urlParams.fast,
-    },
+    query: options.value,
   });
 });
 
-const { data: diff, status, suspense } = useQuery(queryOptions);
+const { data: diff, error, status, suspense } = useQuery(queryOptions);
 onServerPrefetch(suspense);
 </script>
 
 <template>
   <div>
-    <div class="flex items-center justify-center pb-2 gap-4">
-      <LawVersionSelector v-model="left" legend="Alte Version" :versions="law.versions" />
-      <LawVersionSelector v-model="right" legend="Neue Version" :versions="law.versions" />
-      <fieldset class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4">
-        <legend class="fieldset-legend">XMLdiff Optionen</legend>
-        <label class="label">
-          <input v-model="urlParams.fast" type="checkbox" class="checkbox" name="fast_match" />
-          Fast Match
-        </label>
-      </fieldset>
-    </div>
+    <DiffOptions :law :initial="{ left, right, options }" @submit="handleSubmit" />
     <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
-    <p v-else-if="status === 'error'">Error!</p>
+    <p v-else-if="status === 'error'">
+      Error! <code>{{ error }}</code>
+    </p>
     <ParagraphsViewer v-else-if="diff" :diff />
   </div>
 </template>
