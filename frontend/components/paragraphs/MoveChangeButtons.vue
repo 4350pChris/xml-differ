@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useCycleList, useMutationObserver, useTimeoutFn } from "@vueuse/core";
+import { computed, onMounted, ref, watch } from "vue";
+import { useCycleList, useMutationObserver, useTimeoutFn, whenever } from "@vueuse/core";
 
 const props = defineProps<{
   parentElement: HTMLElement | null;
@@ -9,14 +9,17 @@ const props = defineProps<{
 // get all diff elements from the parent element
 const diffs = ref<HTMLElement[]>([]);
 
-useMutationObserver(
-  () => props.parentElement,
-  () => {
-    // Recompute diffs when the parent element changes
-    diffs.value = Array.from(props.parentElement?.querySelectorAll<HTMLElement>(".diff-insert, .diff-del") || []);
-  },
-  { childList: true, subtree: true },
-);
+const setDiffs = () => {
+  if (props.parentElement) {
+    diffs.value = Array.from(props.parentElement.querySelectorAll<HTMLElement>(".diff-insert, .diff-del"));
+  } else {
+    diffs.value = [];
+  }
+};
+
+whenever(() => props.parentElement, setDiffs);
+
+useMutationObserver(() => props.parentElement, setDiffs, { childList: true, subtree: true });
 
 const { next, prev, index: _index, go } = useCycleList(diffs);
 
