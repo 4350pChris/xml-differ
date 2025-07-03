@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useCycleList, useMutationObserver, useTimeoutFn } from "@vueuse/core";
+import { computed, watch } from "vue";
+import { useCycleList, useTimeoutFn } from "@vueuse/core";
 
 const props = defineProps<{
   parentElement: HTMLElement | null;
 }>();
 
 // get all diff elements from the parent element
-const diffs = ref<HTMLElement[]>([]);
+const diffs = computed(() => {
+  if (props.parentElement) {
+    return Array.from(props.parentElement.querySelectorAll<HTMLElement>(".diff-insert, .diff-del"));
+  }
+  return [];
+});
 
-useMutationObserver(
-  () => props.parentElement,
-  () => {
-    // Recompute diffs when the parent element changes
-    diffs.value = Array.from(props.parentElement?.querySelectorAll<HTMLElement>(".diff-insert, .diff-del") || []);
-  },
-  { childList: true, subtree: true },
-);
-
-const { next, prev, index: _index, go } = useCycleList(diffs);
+const { next, prev, state, index: _index, go } = useCycleList(diffs);
 
 const index = computed({
   get: () => _index.value + 1, // +1 for 1-based index
@@ -32,10 +28,11 @@ const index = computed({
 
 const visibilityClassList = ["animate-pulse", "outline", "outline-blue-500"];
 
-watch(index, () => {
-  const oldCurrent = props.parentElement?.querySelector("current");
-  oldCurrent?.classList.remove("current");
-  const newCurrent = diffs.value[_index.value];
+watch(state, (newCurrent, oldCurrent) => {
+  if (!oldCurrent || !newCurrent) {
+    return;
+  }
+  oldCurrent.classList.remove("current");
   newCurrent.classList.add("current", ...visibilityClassList);
   newCurrent.scrollIntoView({ behavior: "smooth" });
   pulseTimeout.start(newCurrent);
