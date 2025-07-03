@@ -37,9 +37,9 @@
     </xsl:template>
 
     <xsl:template match="diff:delete">
-        <span class="diff-del"><strike>
+        <span class="diff-del">
             <xsl:apply-templates/>
-        </strike></span>
+        </span>
     </xsl:template>
 
     <!-- If any major paragraph element is inside a diff tag, put the markup
@@ -96,7 +96,7 @@
     </xsl:template>
 
     <!-- Put diff markup into pseudo-paragraph tags, if they act as paragraph. -->
-    <xsl:template match="entry|LA">
+    <xsl:template match="entry|LA|DT">
         <xsl:variable name="localParas" select="para|h1|h2|h3|h4|h5|h6" />
         <xsl:choose>
             <xsl:when test="not($localParas) and ancestor-or-self::*[@diff:insert]">

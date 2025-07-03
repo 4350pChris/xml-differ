@@ -8,7 +8,6 @@ from xmldiff.formatting import WS_BOTH
 class HTMLFormatter(formatting.XMLFormatter):
     def __init__(self):
         super().__init__(
-            text_tags=("entry", "LA"),
             formatting_tags=(
                 "BR",
                 "B",
