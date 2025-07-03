@@ -72,7 +72,7 @@ watch(visibleElement, (newVisible) => {
 </script>
 
 <template>
-  <ol class="overflow-y-auto bg-base-100 shadow-sm">
+  <ol class="z-40 overflow-y-auto bg-base-100 shadow-sm">
     <li
       v-for="[headingId, item] in toc.entries()"
       :key="item.id"

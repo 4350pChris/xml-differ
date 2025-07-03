@@ -19,7 +19,7 @@ onServerPrefetch(suspense);
 </script>
 
 <template>
-  <div class="p-4 pl-20 md:pr-12 lg:pr-20">
+  <div class="pl-20 md:pl-24 lg:pl-28">
     <template v-if="status === 'pending'">
       <div class="skeleton h-16 w-24"></div>
       <div class="skeleton h-8 w-48"></div>
