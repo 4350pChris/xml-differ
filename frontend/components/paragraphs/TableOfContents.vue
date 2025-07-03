@@ -21,7 +21,6 @@ const y = throttledRef(_y, 100);
 const visibleElement = computed(() => {
   // trick to have this trigger when scrolling
   if (!props.parentElement || y.value < 0) return null;
-  console.log("Checking visible element at scroll position:", y.value);
   for (const el of reverseHeaders.value) {
     const rect = el.getBoundingClientRect();
     if (rect.top <= 80) {
