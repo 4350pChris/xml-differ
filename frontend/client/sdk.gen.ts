@@ -54,7 +54,11 @@ export const getParagraphsVersionsVersionIdParagraphsGet = <ThrowOnError extends
 export const getDiffDiffLeftVersionIdRightVersionIdGet = <ThrowOnError extends boolean = false>(options: Options<GetDiffDiffLeftVersionIdRightVersionIdGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<GetDiffDiffLeftVersionIdRightVersionIdGetResponses, GetDiffDiffLeftVersionIdRightVersionIdGetErrors, ThrowOnError>({
         url: '/diff/{left_version_id}/{right_version_id}',
-        ...options
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     });
 };
 

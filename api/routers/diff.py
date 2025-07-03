@@ -4,7 +4,7 @@ from typing import List
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 
-from diff.differ import diff_files, XmlToHtmlDiffStrategy
+from diff.differ import diff_files, XmlToHtmlDiffStrategy, DifferOptions
 from db.models import LawVersion
 
 router = APIRouter(
@@ -20,7 +20,7 @@ router = APIRouter(
 async def get_diff(
     left_version_id: PydanticObjectId,
     right_version_id: PydanticObjectId,
-    fast_match: bool = True,
+    options: DifferOptions,
 ) -> List[str]:
     left = await LawVersion.get(left_version_id, fetch_links=True)
     if left is None:
@@ -30,7 +30,7 @@ async def get_diff(
     if right is None:
         raise HTTPException(status_code=404, detail="Right version not found")
 
-    diff = partial(diff_files, XmlToHtmlDiffStrategy(), fast_match)
+    diff = partial(diff_files, XmlToHtmlDiffStrategy(), options)
     matches = (
         (lp, rp) for lp in left.paragraphs for rp in right.paragraphs if lp.same_as(rp)
     )
