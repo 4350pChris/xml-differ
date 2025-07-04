@@ -50,6 +50,8 @@ const change = computed<ChangeType>(() => {
 </template>
 
 <style scoped>
+@reference "../../layouts/tailwind.css";
+
 :deep(.S4) {
   margin-left: 0.5rem;
 }
@@ -72,15 +74,11 @@ const change = computed<ChangeType>(() => {
 
 :deep(.diff-insert) {
   text-decoration: none;
-  background-color: #d4f8d4;
-  border: 1px solid #b2e0b2;
-  padding: 0.3rem;
+  @apply bg-success/30 border-success p-1;
 }
 
 :deep(.diff-del) {
   text-decoration: none;
-  background-color: #f8d4d4;
-  border: 1px solid #e0b2b2;
-  padding: 0.3rem;
+  @apply bg-error/30 border-error p-1;
 }
 </style>
