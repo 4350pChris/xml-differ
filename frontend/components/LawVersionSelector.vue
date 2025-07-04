@@ -15,5 +15,3 @@ const model = defineModel<LawVersionListProjection["id"]>();
     </select>
   </fieldset>
 </template>
-
-<style scoped></style>
