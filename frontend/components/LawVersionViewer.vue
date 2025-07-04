@@ -62,7 +62,12 @@ onServerPrefetch(suspense);
 
 <template>
   <div>
-    <DiffOptions :law :initial="{ left, right, options }" @submit="handleSubmit" />
+    <DiffOptions
+      class="fixed bottom-4 left-24 md:left-28 lg:left-32"
+      :law
+      :initial="{ left, right, options }"
+      @submit="handleSubmit"
+    />
     <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
     <p v-else-if="status === 'error'">
       Error! <code>{{ error }}</code>

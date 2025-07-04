@@ -14,6 +14,10 @@ const props = defineProps<{
   };
 }>();
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const left = ref<string>(props.initial.left);
 const right = ref<string>(props.initial.right);
 const options = ref<DifferOptions>({ ...props.initial.options });
@@ -45,7 +49,15 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
 </script>
 
 <template>
-  <button class="btn fixed bottom-4 left-24" @click="modalEl?.showModal()">open modal</button>
+  <button class="btn btn-circle" v-bind="$attrs" @click="modalEl?.showModal()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE -->
+      <path
+        fill="currentColor"
+        d="M6 0C4.89 0 4 .89 4 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-6-6zm7 1.5L18.5 7H13zM7 22v2h2v-2zm4 0v2h2v-2zm4 0v2h2v-2z"
+      />
+    </svg>
+  </button>
   <dialog ref="modal" class="modal modal-bottom sm:modal-middle" @submit.stop>
     <div class="modal-box">
       <h3 class="text-lg font-bold">Optionen</h3>
