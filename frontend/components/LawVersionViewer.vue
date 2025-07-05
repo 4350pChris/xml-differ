@@ -9,6 +9,7 @@ import { usePageContext } from "vike-vue/usePageContext";
 import MoveChangeButtons from "./paragraphs/MoveChangeButtons.vue";
 import ParagraphXMLViewer from "./paragraphs/ParagraphXMLViewer.vue";
 import TableOfContents from "./paragraphs/TableOfContents.vue";
+import DiffViewSwitch from "./DiffViewSwitch.vue";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 const urlParams = useUrlSearchParams();
@@ -32,8 +33,9 @@ const options = ref<DifferOptions>({
   fast_match: search.fast_match ? search.fast_match === "true" : false,
   ratio_mode: (search.ratio_mode as "fast") ?? "fast",
   F: search.F ? parseFloat(search.F) : 0.5,
-  split: true,
 });
+
+const splitView = ref(false);
 
 watch(options, (newOptions) => {
   Object.entries(newOptions).forEach(([key, value]) => {
@@ -53,7 +55,7 @@ const queryOptions = computed(() => {
       left_version_id: left.value,
       right_version_id: right.value,
     },
-    query: options.value,
+    query: { ...options.value, split: splitView.value },
   });
 });
 
@@ -63,6 +65,7 @@ onServerPrefetch(suspense);
 
 <template>
   <div class="mx-auto">
+    <DiffViewSwitch :model-value="splitView" />
     <h1 class="text-2xl font-bold mb-4">{{ law.name }}</h1>
     <p class="mb-8">{{ law.long_title ?? law.short_title }}</p>
     <DiffOptions

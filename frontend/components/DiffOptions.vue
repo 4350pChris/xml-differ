@@ -3,7 +3,7 @@ import { GetDiffDiffLeftVersionIdRightVersionIdGetData, LawDetailProjection } fr
 import LawVersionSelector from "./LawVersionSelector.vue";
 import { ref, useTemplateRef } from "vue";
 
-export type DifferOptions = GetDiffDiffLeftVersionIdRightVersionIdGetData["query"];
+export type DifferOptions = Omit<GetDiffDiffLeftVersionIdRightVersionIdGetData["query"], "split">;
 
 const props = defineProps<{
   law: LawDetailProjection;
@@ -70,10 +70,6 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
         <label class="label">
           <input v-model="options.fast_match" type="checkbox" class="checkbox" name="fast_match" />
           Fast Match
-        </label>
-        <label class="label">
-          <input v-model="options.split" type="checkbox" class="checkbox" name="split" />
-          Split Diff
         </label>
         <label class="input">
           <input v-model="options.F" type="number" name="F" :min="0" :max="1" :step="0.1" />
