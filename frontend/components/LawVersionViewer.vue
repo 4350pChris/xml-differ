@@ -64,7 +64,7 @@ onServerPrefetch(suspense);
 </script>
 
 <template>
-  <div class="mx-auto">
+  <div class="mx-auto flex flex-col justify-center min-w-0">
     <DiffViewSwitch :model-value="splitView" />
     <h1 class="text-2xl font-bold mb-4">{{ law.name }}</h1>
     <p class="mb-8">{{ law.long_title ?? law.short_title }}</p>
@@ -77,8 +77,10 @@ onServerPrefetch(suspense);
     <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
     <p v-else-if="status === 'error'" class="text-error-content">Fehler beim Laden</p>
     <template v-else-if="diff">
-      <TableOfContents class="fixed top-16 bottom-0 left-0 w-20 md:w-24 lg:w-28" :parent-element="diffEl" />
-      <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
+      <teleport to="#teleported">
+        <TableOfContents class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28" :parent-element="diffEl" />
+        <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
+      </teleport>
       <div ref="diffParent" class="flex flex-col">
         <template v-if="options.split">
           <div v-for="(content, i) in diff" :key="`${i}-${content.length}`" class="grid grid-cols-2 gap-4">

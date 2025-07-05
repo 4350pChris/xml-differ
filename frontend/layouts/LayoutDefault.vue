@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-base-100 min-h-svh">
+  <div class="bg-base-100 min-h-svh max-w-svw">
     <Content><slot /></Content>
   </div>
 </template>

@@ -25,9 +25,9 @@ const change = computed<ChangeType>(() => {
 </script>
 
 <template>
-  <div :id="id" class="scroll-mt-16 indicator prose" data-wrapper="true" :data-change="change">
+  <div :id="id" class="scroll-mt-16 indicator prose w-full" data-wrapper="true" :data-change="change">
     <ChangeIndicator :change="change" />
-    <div v-html="xmlDoc.documentElement.innerHTML"></div>
+    <div class="w-full break-words" v-html="xmlDoc.documentElement.innerHTML"></div>
   </div>
 </template>
 
