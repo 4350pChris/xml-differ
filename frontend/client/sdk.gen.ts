@@ -23,7 +23,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  */
 export const getLawsLawsGet = <ThrowOnError extends boolean = false>(options?: Options<GetLawsLawsGetData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<GetLawsLawsGetResponses, GetLawsLawsGetErrors, ThrowOnError>({
-        url: '/laws/',
+        url: '/laws',
         ...options
     });
 };

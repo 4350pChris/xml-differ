@@ -127,8 +127,13 @@ export type ValidationError = {
 export type GetLawsLawsGetData = {
     body?: never;
     path?: never;
-    query?: never;
-    url: '/laws/';
+    query?: {
+        /**
+         * All
+         */
+        all?: boolean;
+    };
+    url: '/laws';
 };
 
 export type GetLawsLawsGetErrors = {
@@ -136,11 +141,17 @@ export type GetLawsLawsGetErrors = {
      * Not found
      */
     404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
 };
+
+export type GetLawsLawsGetError = GetLawsLawsGetErrors[keyof GetLawsLawsGetErrors];
 
 export type GetLawsLawsGetResponses = {
     /**
-     * Response Get Laws Laws  Get
+     * Response Get Laws Laws Get
      * List of laws
      */
     200: Array<LawListProjection>;
