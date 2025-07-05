@@ -2,8 +2,9 @@
 import { GetDiffDiffLeftVersionIdRightVersionIdGetData, LawDetailProjection } from "../client";
 import LawVersionSelector from "./LawVersionSelector.vue";
 import { ref, useTemplateRef } from "vue";
+import DiffViewSwitch from "./DiffViewSwitch.vue";
 
-export type DifferOptions = Omit<GetDiffDiffLeftVersionIdRightVersionIdGetData["query"], "split">;
+export type DifferOptions = GetDiffDiffLeftVersionIdRightVersionIdGetData["query"];
 
 const props = defineProps<{
   law: LawDetailProjection;
@@ -60,12 +61,13 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
   </button>
   <dialog ref="modal" class="modal modal-bottom sm:modal-middle" @submit.stop>
     <div class="modal-box">
-      <fieldset class="fieldset bg-base-100 rounded-box p-4">
+      <DiffViewSwitch v-model="options.split" />
+      <fieldset class="fieldset bg-base-100">
         <legend class="fieldset-legend text-lg">Versionen</legend>
         <LawVersionSelector v-model="left" legend="Alte Version" :versions="law.versions" />
         <LawVersionSelector v-model="right" legend="Neue Version" :versions="law.versions" />
       </fieldset>
-      <fieldset class="fieldset bg-base-100 rounded-box p-4">
+      <fieldset class="fieldset bg-base-100">
         <legend class="fieldset-legend text-lg">XMLdiff</legend>
         <label class="label">
           <input v-model="options.fast_match" type="checkbox" class="checkbox" name="fast_match" />

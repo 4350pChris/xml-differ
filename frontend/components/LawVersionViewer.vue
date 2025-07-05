@@ -9,7 +9,6 @@ import { usePageContext } from "vike-vue/usePageContext";
 import MoveChangeButtons from "./paragraphs/MoveChangeButtons.vue";
 import ParagraphXMLViewer from "./paragraphs/ParagraphXMLViewer.vue";
 import TableOfContents from "./paragraphs/TableOfContents.vue";
-import DiffViewSwitch from "./DiffViewSwitch.vue";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 const urlParams = useUrlSearchParams();
@@ -17,15 +16,13 @@ const pageContext = usePageContext();
 const { search } = pageContext.urlParsed;
 const left = ref<string>(search.left ?? props.law.versions[0]?.id);
 const right = ref<string>(search.right ?? props.law.versions[props.law.versions.length - 1]?.id);
-const splitView = ref(search.split === "true");
 const diffEl = useTemplateRef<HTMLElement>("diffParent");
 
 watch(
-  [left, right, splitView],
-  ([newLeft, newRight, split]) => {
+  [left, right],
+  ([newLeft, newRight]) => {
     urlParams.left = newLeft;
     urlParams.right = newRight;
-    urlParams.split = split.toString();
   },
   { immediate: true },
 );
@@ -34,6 +31,7 @@ const options = ref<DifferOptions>({
   fast_match: search.fast_match === "true",
   ratio_mode: (search.ratio_mode as "fast") ?? "fast",
   F: search.F ? parseFloat(search.F) : 0.5,
+  split: search.split === "true",
 });
 
 watch(options, (newOptions) => {
@@ -54,7 +52,7 @@ const queryOptions = computed(() => {
       left_version_id: left.value,
       right_version_id: right.value,
     },
-    query: { ...options.value, split: splitView.value },
+    query: options.value,
   });
 });
 
@@ -64,7 +62,6 @@ onServerPrefetch(suspense);
 
 <template>
   <div class="mx-auto flex flex-col justify-center min-w-0 w-full">
-    <DiffViewSwitch v-model="splitView" />
     <h1 class="text-2xl font-bold mb-4">{{ law.name }}</h1>
     <p class="mb-8">{{ law.long_title ?? law.short_title }}</p>
     <DiffOptions
@@ -80,7 +77,7 @@ onServerPrefetch(suspense);
         <TableOfContents class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28" :parent-element="diffEl" />
         <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
       </teleport>
-      <div ref="diffParent" :class="[splitView ? 'grid grid-cols-2 gap-4' : 'flex flex-col']">
+      <div ref="diffParent" :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']">
         <template v-for="(paragraph, i) in diff" :key="`${i}-${paragraph.map((c) => c.length)}`">
           <ParagraphXMLViewer v-for="(content, i) in paragraph" :key="`p-${i}-${content.length}`" :content />
         </template>

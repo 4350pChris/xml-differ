@@ -3,14 +3,14 @@ const split = defineModel<boolean>({ required: true });
 </script>
 
 <template>
-  <fieldset class="fieldset">
+  <fieldset class="fieldset bg-base-100">
     <legend class="fieldset-legend text-lg">Diff Ansicht</legend>
-    <label class="swap swap-active *:w-full">
+    <label class="swap swap-active w-fit">
       <input v-model="split" type="checkbox" aria-label="Zwischen Seite bei Seite und vereinigtem Diff wechseln" />
 
       <svg
         aria-label="Seite bei Seite Diff"
-        :class="split ? 'swap-on' : 'swap-off'"
+        :class="split ? 'swap-off' : 'swap-on'"
         xmlns="http://www.w3.org/2000/svg"
         width="32"
         height="32"
@@ -24,7 +24,7 @@ const split = defineModel<boolean>({ required: true });
       </svg>
 
       <span
-        :class="split ? 'swap-off' : 'swap-on'"
+        :class="split ? 'swap-on' : 'swap-off'"
         class="flex items-center justify-center"
         aria-label="Vereinigtes Diff"
       >
