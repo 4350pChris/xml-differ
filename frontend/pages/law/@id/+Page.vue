@@ -19,7 +19,7 @@ onServerPrefetch(suspense);
 </script>
 
 <template>
-  <div class="pl-16 md:pl-24 lg:pl-28 flex items-start justify-center">
+  <div class="pl-16 md:pl-24 lg:pl-28 flex">
     <div v-if="status === 'pending'" class="flex flex-col gap-4">
       <div class="skeleton h-16 w-24"></div>
       <div class="skeleton h-8 w-48"></div>

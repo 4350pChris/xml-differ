@@ -61,9 +61,9 @@ onServerPrefetch(suspense);
 </script>
 
 <template>
-  <div class="mx-auto flex flex-col justify-center min-w-0 w-full">
-    <h1 class="text-2xl font-bold mb-4">{{ law.name }}</h1>
-    <p class="mb-8">{{ law.long_title ?? law.short_title }}</p>
+  <div class="prose mx-auto flex flex-col items-center min-w-0 w-full">
+    <h1>{{ law.name }}</h1>
+    <p>{{ law.long_title ?? law.short_title }}</p>
     <DiffOptions
       class="fixed bottom-4 left-24 md:left-28 lg:left-32"
       :law
