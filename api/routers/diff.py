@@ -1,11 +1,17 @@
 from functools import partial
-from typing import List, Annotated
+from typing import List, Annotated, Tuple
 
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 
-from diff.differ import diff_files, XmlToHtmlDiffStrategy, DifferOptions
+from diff.differ import (
+    diff_files,
+    XmlToHtmlDiffStrategy,
+    DifferOptions,
+    XmlToSplitHtmlDiffStrategy,
+    DiffStrategy,
+)
 from db.models import LawVersion
 
 router = APIRouter(
@@ -15,6 +21,14 @@ router = APIRouter(
 )
 
 
+def get_diff_strategy(
+    split: bool,
+) -> XmlToHtmlDiffStrategy | XmlToSplitHtmlDiffStrategy:
+    if split:
+        return XmlToSplitHtmlDiffStrategy()
+    return XmlToHtmlDiffStrategy()
+
+
 @router.get(
     "/{left_version_id}/{right_version_id}", response_description="Diff endpoint"
 )
@@ -22,7 +36,8 @@ async def get_diff(
     left_version_id: PydanticObjectId,
     right_version_id: PydanticObjectId,
     options: Annotated[DifferOptions, Depends(DifferOptions)],
-) -> List[str]:
+    strategy: Annotated[DiffStrategy, Depends(get_diff_strategy)],
+) -> List[str | Tuple[str, str]]:
     left = await LawVersion.get(left_version_id, fetch_links=True)
     if left is None:
         raise HTTPException(status_code=404, detail="Left version not found")
@@ -31,7 +46,7 @@ async def get_diff(
     if right is None:
         raise HTTPException(status_code=404, detail="Right version not found")
 
-    diff = partial(diff_files, XmlToHtmlDiffStrategy(), options)
+    diff = partial(diff_files, strategy, options)
     matches = (
         (lp, rp) for lp in left.paragraphs for rp in right.paragraphs if lp.same_as(rp)
     )
