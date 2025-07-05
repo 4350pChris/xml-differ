@@ -25,7 +25,7 @@ onServerPrefetch(suspense);
       <div class="skeleton h-8 w-48"></div>
     </template>
     <template v-else-if="status === 'error'">
-      <p>Error loading law details!</p>
+      <p class="text-error-content">Fehler beim Laden</p>
     </template>
     <LawVersionViewer v-else-if="law" :law />
   </div>

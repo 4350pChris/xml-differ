@@ -57,7 +57,7 @@ const queryOptions = computed(() => {
   });
 });
 
-const { data: diff, error, status, suspense } = useQuery(queryOptions);
+const { data: diff, status, suspense } = useQuery(queryOptions);
 onServerPrefetch(suspense);
 </script>
 
@@ -72,9 +72,7 @@ onServerPrefetch(suspense);
       @submit="handleSubmit"
     />
     <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
-    <p v-else-if="status === 'error'">
-      Error! <code>{{ error }}</code>
-    </p>
+    <p v-else-if="status === 'error'" class="text-error-content">Fehler beim Laden</p>
     <template v-else-if="diff">
       <TableOfContents class="fixed top-16 bottom-0 left-0 w-20 md:w-24 lg:w-28" :parent-element="diffEl" />
       <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
