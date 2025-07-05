@@ -1,56 +1,44 @@
 <script setup lang="ts">
 import { LawDetailProjection } from "../client";
-import { computed, onServerPrefetch, ref, useTemplateRef, watch } from "vue";
+import { computed, onServerPrefetch, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import DiffOptions, { type DifferOptions } from "./DiffOptions.vue";
-import { useUrlSearchParams } from "@vueuse/core";
-import { usePageContext } from "vike-vue/usePageContext";
 import MoveChangeButtons from "./paragraphs/MoveChangeButtons.vue";
 import ParagraphXMLViewer from "./paragraphs/ParagraphXMLViewer.vue";
 import TableOfContents from "./paragraphs/TableOfContents.vue";
+import {
+  makeBoolOptions,
+  makeFloatOptions,
+  makeStringOptions,
+  useSyncedUrlParam,
+} from "../composables/useSyncedUrlParam";
 
 const props = defineProps<{ law: LawDetailProjection }>();
-const urlParams = useUrlSearchParams();
-const pageContext = usePageContext();
-const { search } = pageContext.urlParsed;
-const left = ref<string>(search.left ?? props.law.versions[0]?.id);
-const right = ref<string>(search.right ?? props.law.versions[props.law.versions.length - 1]?.id);
+const versions = useSyncedUrlParam({
+  oldVersion: makeStringOptions(props.law.versions[0]?.id),
+  newVersion: makeStringOptions(props.law.versions[props.law.versions.length - 1]?.id),
+});
+
+const options = useSyncedUrlParam({
+  fast_match: makeBoolOptions(false),
+  ratio_mode: makeStringOptions<DifferOptions["ratio_mode"]>("fast"),
+  F: makeFloatOptions(0.5),
+  split: makeBoolOptions(false),
+});
+
 const diffEl = useTemplateRef<HTMLElement>("diffParent");
 
-watch(
-  [left, right],
-  ([newLeft, newRight]) => {
-    urlParams.left = newLeft;
-    urlParams.right = newRight;
-  },
-  { immediate: true },
-);
-
-const options = ref<DifferOptions>({
-  fast_match: search.fast_match === "true",
-  ratio_mode: (search.ratio_mode as "fast") ?? "fast",
-  F: search.F ? parseFloat(search.F) : 0.5,
-  split: search.split === "true",
-});
-
-watch(options, (newOptions) => {
-  Object.entries(newOptions).forEach(([key, value]) => {
-    urlParams[key] = value.toString();
-  });
-});
-
-const handleSubmit = (versions: [string, string], newOptions: DifferOptions) => {
-  left.value = versions[0];
-  right.value = versions[1];
+const handleSubmit = ([oldVersion, newVersion]: [string, string], newOptions: DifferOptions) => {
+  versions.value = { oldVersion, newVersion };
   options.value = newOptions;
 };
 
 const queryOptions = computed(() => {
   return getDiffDiffLeftVersionIdRightVersionIdGetOptions({
     path: {
-      left_version_id: left.value,
-      right_version_id: right.value,
+      left_version_id: versions.value.oldVersion,
+      right_version_id: versions.value.newVersion,
     },
     query: options.value,
   });
@@ -67,7 +55,7 @@ onServerPrefetch(suspense);
     <DiffOptions
       class="fixed bottom-4 left-24 md:left-28 lg:left-32"
       :law
-      :initial="{ left, right, options }"
+      :initial="{ ...versions, options }"
       @submit="handleSubmit"
     />
     <div v-if="status === 'pending'" class="skeleton w-full h-96"></div>
@@ -79,7 +67,7 @@ onServerPrefetch(suspense);
       </teleport>
       <div ref="diffParent" :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']">
         <template v-for="(paragraph, i) in diff" :key="`${i}-${paragraph.map((c) => c.length)}`">
-          <ParagraphXMLViewer v-for="(content, i) in paragraph" :key="`p-${i}-${content.length}`" :content />
+          <ParagraphXMLViewer v-for="(content, j) in paragraph" :key="`p-${j}-${content.length}`" :content />
         </template>
       </div>
     </template>

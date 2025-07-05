@@ -9,8 +9,8 @@ export type DifferOptions = GetDiffDiffLeftVersionIdRightVersionIdGetData["query
 const props = defineProps<{
   law: LawDetailProjection;
   initial: {
-    left: string;
-    right: string;
+    oldVersion: string;
+    newVersion: string;
     options: DifferOptions;
   };
 }>();
@@ -19,8 +19,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const left = ref<string>(props.initial.left);
-const right = ref<string>(props.initial.right);
+const left = ref<string>(props.initial.oldVersion);
+const right = ref<string>(props.initial.newVersion);
 const options = ref<DifferOptions>({ ...props.initial.options });
 
 const emits = defineEmits<{
