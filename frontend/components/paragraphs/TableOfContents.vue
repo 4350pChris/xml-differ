@@ -10,7 +10,7 @@ const props = defineProps<{
 // get all diff elements from the parent element
 const headerElements = computed(() => {
   if (props.parentElement) {
-    return Array.from(props.parentElement.querySelectorAll<HTMLElement>("h2"));
+    return Array.from(props.parentElement.querySelectorAll<HTMLElement>("[data-wrapper='true']"));
   }
   return [];
 });

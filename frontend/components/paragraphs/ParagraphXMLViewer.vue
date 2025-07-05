@@ -10,30 +10,13 @@ const xmlDoc = computed(() => {
   return parser.parseFromString(props.content, "text/xml");
 });
 
-const metadataElement = computed(() => {
-  return xmlDoc.value.documentElement.firstElementChild;
-});
-
 const id = computed(() => {
-  return xmlDoc.value.documentElement.getAttribute("doknr") || "";
-});
-
-const title = computed(() => {
-  const titleElements = metadataElement.value?.querySelectorAll("enbez, titel");
-  if (!titleElements) return "Missing Title";
-  return Array.from(titleElements)
-    .map((el) => el.textContent?.trim())
-    .filter(Boolean)
-    .join(" ");
-});
-
-const paragraphElement = computed(() => {
-  return metadataElement.value?.nextElementSibling;
+  return xmlDoc.value.documentElement.getAttribute("doknr");
 });
 
 const change = computed<ChangeType>(() => {
-  const deletions = paragraphElement.value?.querySelectorAll(".diff-del")?.length;
-  const additions = paragraphElement.value?.querySelectorAll(".diff-insert")?.length;
+  const deletions = xmlDoc.value.documentElement.querySelectorAll(".diff-del")?.length;
+  const additions = xmlDoc.value.documentElement.querySelectorAll(".diff-insert")?.length;
 
   if (!deletions && !additions) return false;
   if (deletions && additions) return "mixed";
@@ -42,11 +25,10 @@ const change = computed<ChangeType>(() => {
 </script>
 
 <template>
-  <h2 :id="id" class="scroll-mt-16 indicator max-w-full" :data-change="change">
+  <div :id="id" class="scroll-mt-16 indicator max-w-full" data-wrapper="true" :data-change="change">
     <ChangeIndicator :change="change" />
-    <span>{{ title }}</span>
-  </h2>
-  <div v-html="paragraphElement?.innerHTML"></div>
+    <div v-html="xmlDoc.documentElement.innerHTML"></div>
+  </div>
 </template>
 
 <style scoped>
