@@ -15,9 +15,9 @@ const laws = computed(() =>
 </script>
 
 <template>
-  <ul class="flex flex-col divide-y divide-gray-200 bg-base-100">
+  <ul class="flex flex-col divide-y divide-base-content/10 bg-base-100">
     <li v-for="law in laws" :key="law.id">
-      <a class="w-full inline-block py-2 px-4 hover:bg-gray-100" :href="`/law/${law.id}`">
+      <a class="w-full inline-block py-2 px-4 hover:bg-base-content/10" :href="`/law/${law.id}`">
         <slot :law="law">{{ law.name }}</slot>
       </a>
     </li>
