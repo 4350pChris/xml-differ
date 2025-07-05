@@ -48,7 +48,7 @@ const toc = computed(() => {
     map.set(el.id, {
       id: `toc-${el.id}`,
       href: `#${el.id}`,
-      name: el.textContent?.trim()?.split(" ").slice(0, 2).join(" ") || `Item ${index + 1}`,
+      name: el.querySelector(".enbez")?.textContent?.trim()?.split(" ").slice(0, 2).join(" ") || `Item ${index + 1}`,
       change: getChangeType(el.dataset.change),
     });
   });
