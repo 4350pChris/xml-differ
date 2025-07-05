@@ -227,6 +227,10 @@ export type GetDiffDiffLeftVersionIdRightVersionIdGetData = {
     };
     query: {
         /**
+         * Split
+         */
+        split: boolean;
+        /**
          * Fast Match
          */
         fast_match: boolean;
@@ -260,7 +264,10 @@ export type GetDiffDiffLeftVersionIdRightVersionIdGetResponses = {
      * Response Get Diff Diff  Left Version Id   Right Version Id  Get
      * Diff endpoint
      */
-    200: Array<string>;
+    200: Array<string | [
+        string,
+        string
+    ]>;
 };
 
 export type GetDiffDiffLeftVersionIdRightVersionIdGetResponse = GetDiffDiffLeftVersionIdRightVersionIdGetResponses[keyof GetDiffDiffLeftVersionIdRightVersionIdGetResponses];

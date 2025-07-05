@@ -71,6 +71,10 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
           <input v-model="options.fast_match" type="checkbox" class="checkbox" name="fast_match" />
           Fast Match
         </label>
+        <label class="label">
+          <input v-model="options.split" type="checkbox" class="checkbox" name="split" />
+          Split Diff
+        </label>
         <label class="input">
           <input v-model="options.F" type="number" name="F" :min="0" :max="1" :step="0.1" />
           <span class="label">Ähnlichkeit (0.0 - 1.0)</span>

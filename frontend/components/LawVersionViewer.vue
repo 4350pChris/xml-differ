@@ -32,6 +32,7 @@ const options = ref<DifferOptions>({
   fast_match: search.fast_match ? search.fast_match === "true" : false,
   ratio_mode: (search.ratio_mode as "fast") ?? "fast",
   F: search.F ? parseFloat(search.F) : 0.5,
+  split: true,
 });
 
 watch(options, (newOptions) => {
@@ -75,8 +76,19 @@ onServerPrefetch(suspense);
     <template v-else-if="diff">
       <TableOfContents class="not-prose fixed top-16 bottom-0 left-0 w-20 md:w-24 lg:w-28" :parent-element="diffEl" />
       <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
-      <div ref="diffParent">
-        <ParagraphXMLViewer v-for="(content, i) in diff" :key="`${i}-${content.length}`" :content />
+      <div ref="diffParent" class="flex flex-col">
+        <template v-if="options.split">
+          <div v-for="(content, i) in diff" :key="`${i}-${content.length}`" class="flex gap-2">
+            <ParagraphXMLViewer :content="content[0]" />
+            <ParagraphXMLViewer :content="content[1]" />
+          </div>
+        </template>
+        <ParagraphXMLViewer
+          v-for="(content, i) in diff"
+          v-else
+          :key="`${i}-${content.length}`"
+          :content="content as string"
+        />
       </div>
     </template>
   </div>
