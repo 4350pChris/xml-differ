@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Literal, Tuple
+from typing import Literal, List
 
 from lxml import etree as ET
 from xmldiff import main as xmldiff_main
@@ -19,14 +19,14 @@ class DiffStrategy(ABC):
     @abstractmethod
     def __call__(
         self, left: ET.Element, right: ET.Element, options: DifferOptions
-    ) -> str | Tuple[str, str]:
+    ) -> List[str]:
         raise NotImplementedError("Subclasses should implement this method.")
 
 
 class XmlToHtmlDiffStrategy(DiffStrategy):
     def __call__(
         self, left: ET.Element, right: ET.Element, options: DifferOptions
-    ) -> str:
+    ) -> List[str]:
         formatter = HTMLFormatter()
         edits = xmldiff_main.diff_trees(
             left,
@@ -37,7 +37,7 @@ class XmlToHtmlDiffStrategy(DiffStrategy):
                 "ignored_attrs": ["Font", "Size", "builddate", "doknr"],
             },
         )
-        return edits.__str__()
+        return [edits.__str__()]
 
 
 class XmlToSplitHtmlDiffStrategy(XmlToHtmlDiffStrategy):
@@ -55,18 +55,18 @@ class XmlToSplitHtmlDiffStrategy(XmlToHtmlDiffStrategy):
 
     def __call__(
         self, left: ET.Element, right: ET.Element, options: DifferOptions
-    ) -> Tuple[str, str]:
-        edit_html = super().__call__(left, right, options)
+    ) -> List[str]:
+        edit_html = super().__call__(left, right, options)[0]
 
         left_tree_str = self._remove_nodes(edit_html, "diff-insert", "ins")
         right_tree_str = self._remove_nodes(edit_html, "diff-delete", "del")
 
-        return left_tree_str, right_tree_str
+        return [left_tree_str, right_tree_str]
 
 
 def diff_files(
     diff_strategy: DiffStrategy, options: DifferOptions, left: str, right: str
-) -> str | Tuple[str, str]:
+) -> List[str]:
     left_tree = ET.ElementTree(ET.fromstring(left))
     right_tree = ET.ElementTree(ET.fromstring(right))
 

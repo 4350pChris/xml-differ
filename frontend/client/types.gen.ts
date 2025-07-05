@@ -227,10 +227,6 @@ export type GetDiffDiffLeftVersionIdRightVersionIdGetData = {
     };
     query: {
         /**
-         * Split
-         */
-        split: boolean;
-        /**
          * Fast Match
          */
         fast_match: boolean;
@@ -242,6 +238,10 @@ export type GetDiffDiffLeftVersionIdRightVersionIdGetData = {
          * Ratio Mode
          */
         ratio_mode: 'accurate' | 'fast' | 'faster';
+        /**
+         * Split
+         */
+        split: boolean;
     };
     url: '/diff/{left_version_id}/{right_version_id}';
 };
@@ -264,10 +264,7 @@ export type GetDiffDiffLeftVersionIdRightVersionIdGetResponses = {
      * Response Get Diff Diff  Left Version Id   Right Version Id  Get
      * Diff endpoint
      */
-    200: Array<string | [
-        string,
-        string
-    ]>;
+    200: Array<Array<string>>;
 };
 
 export type GetDiffDiffLeftVersionIdRightVersionIdGetResponse = GetDiffDiffLeftVersionIdRightVersionIdGetResponses[keyof GetDiffDiffLeftVersionIdRightVersionIdGetResponses];

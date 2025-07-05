@@ -1,5 +1,5 @@
 from functools import partial
-from typing import List, Annotated, Tuple
+from typing import List, Annotated
 
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
@@ -37,7 +37,7 @@ async def get_diff(
     right_version_id: PydanticObjectId,
     options: Annotated[DifferOptions, Depends(DifferOptions)],
     strategy: Annotated[DiffStrategy, Depends(get_diff_strategy)],
-) -> List[str | Tuple[str, str]]:
+) -> List[List[str]]:
     left = await LawVersion.get(left_version_id, fetch_links=True)
     if left is None:
         raise HTTPException(status_code=404, detail="Left version not found")
