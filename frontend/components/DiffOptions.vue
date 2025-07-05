@@ -49,7 +49,7 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
 </script>
 
 <template>
-  <button class="btn btn-circle" v-bind="$attrs" title="Optionen" @click="modalEl?.showModal()">
+  <button class="btn btn-circle z-40" v-bind="$attrs" title="Optionen" @click="modalEl?.showModal()">
     <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24">
       <!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE -->
       <path

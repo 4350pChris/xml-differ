@@ -74,11 +74,11 @@ onServerPrefetch(suspense);
       Error! <code>{{ error }}</code>
     </p>
     <template v-else-if="diff">
-      <TableOfContents class="not-prose fixed top-16 bottom-0 left-0 w-20 md:w-24 lg:w-28" :parent-element="diffEl" />
+      <TableOfContents class="fixed top-16 bottom-0 left-0 w-20 md:w-24 lg:w-28" :parent-element="diffEl" />
       <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
       <div ref="diffParent" class="flex flex-col">
         <template v-if="options.split">
-          <div v-for="(content, i) in diff" :key="`${i}-${content.length}`" class="flex gap-2">
+          <div v-for="(content, i) in diff" :key="`${i}-${content.length}`" class="grid grid-cols-2 gap-4">
             <ParagraphXMLViewer :content="content[0]" />
             <ParagraphXMLViewer :content="content[1]" />
           </div>
