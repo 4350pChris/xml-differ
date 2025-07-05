@@ -32,7 +32,10 @@ class XmlToHtmlDiffStrategy(DiffStrategy):
             left,
             right,
             formatter=formatter,
-            diff_options={**options.__dict__, "ignored_attrs": ["Font", "Size"]},
+            diff_options={
+                **options.__dict__,
+                "ignored_attrs": ["Font", "Size", "builddate", "doknr"],
+            },
         )
         return edits.__str__()
 

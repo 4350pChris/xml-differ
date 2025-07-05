@@ -7,21 +7,25 @@ from xmldiff.formatting import WS_BOTH
 
 class HTMLFormatter(formatting.XMLFormatter):
     def __init__(self):
+        text_tags = ("SPAN", "ENTRY", "DT", "LA[not(*)]")
+        # text_tags=None
+        formatting_tags = (
+            "BR",
+            "B",
+            "U",
+            "I",
+            "F",
+            "SP",
+            "small",
+            "SUP",
+            "SUB",
+            "FnR",
+            "NB",
+            "noindex",
+        )
         super().__init__(
-            formatting_tags=(
-                "BR",
-                "B",
-                "U",
-                "I",
-                "F",
-                "SP",
-                "small",
-                "SUP",
-                "SUB",
-                "FnR",
-                "NB",
-                "noindex",
-            ),
+            text_tags=text_tags,
+            formatting_tags=formatting_tags,
             normalize=WS_BOTH,
         )
 
