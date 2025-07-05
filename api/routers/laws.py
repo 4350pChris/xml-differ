@@ -21,8 +21,11 @@ router = APIRouter(
     "/", response_description="List of laws", response_model=List[LawListProjection]
 )
 @cache(expire=3600)
-async def get_laws():
-    laws = await Law.find_all().project(LawListProjection).to_list()
+async def get_laws(all: bool = False):
+    query = {}
+    if not all:
+        query = {"$expr": {"$gt": [{"$size": "$versions"}, 1]}}
+    laws = await Law.find_all(query).project(LawListProjection).to_list()
     return laws
 
 
