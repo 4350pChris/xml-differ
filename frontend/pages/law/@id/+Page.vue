@@ -19,7 +19,7 @@ onServerPrefetch(suspense);
 </script>
 
 <template>
-  <div class="pl-20 md:pl-24 lg:pl-28">
+  <div class="pl-20 md:pl-24 lg:pl-28 flex">
     <template v-if="status === 'pending'">
       <div class="skeleton h-16 w-24"></div>
       <div class="skeleton h-8 w-48"></div>
@@ -27,10 +27,6 @@ onServerPrefetch(suspense);
     <template v-else-if="status === 'error'">
       <p>Error loading law details!</p>
     </template>
-    <div v-else-if="law" class="mx-auto">
-      <h1 class="text-2xl font-bold mb-4">{{ law.name }}</h1>
-      <p class="mb-8">{{ law.long_title ?? law.short_title }}</p>
-      <LawVersionViewer :law />
-    </div>
+    <LawVersionViewer v-else-if="law" :law />
   </div>
 </template>

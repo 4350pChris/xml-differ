@@ -62,7 +62,9 @@ onServerPrefetch(suspense);
 </script>
 
 <template>
-  <div>
+  <div class="mx-auto">
+    <h1 class="text-2xl font-bold mb-4">{{ law.name }}</h1>
+    <p class="mb-8">{{ law.long_title ?? law.short_title }}</p>
     <DiffOptions
       class="fixed bottom-4 left-24 md:left-28 lg:left-32"
       :law
