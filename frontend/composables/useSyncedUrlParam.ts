@@ -51,7 +51,6 @@ export function useSyncedUrlParam<T extends Record<string, SyncedUrlParams<any>>
     val,
     (newValue) => {
       Object.entries(newValue).forEach(([key, value]) => {
-        console.debug(`Setting URL param ${key} to ${value}`);
         urlParams[key] = options[key].serialize(value);
       });
     },
