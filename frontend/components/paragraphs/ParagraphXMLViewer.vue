@@ -56,11 +56,11 @@ const change = computed<ChangeType>(() => {
 
 :deep(.diff-insert) {
   text-decoration: none;
-  @apply bg-success/30 border-success p-1;
+  @apply bg-success/30 border-success p-1 inline-block;
 }
 
 :deep(.diff-del) {
   text-decoration: none;
-  @apply bg-error/30 border-error p-1;
+  @apply bg-error/30 border-error p-1 inline-block;
 }
 </style>
