@@ -2,10 +2,7 @@
   <h1 class="text-2xl mb-4">Gesetze</h1>
   <label class="label">
     <input v-model="params.all" type="checkbox" class="checkbox" name="all" />
-    <transition name="fade">
-      <span v-if="params.all">Alle Gesetze anzeigen</span>
-      <span v-else>Nur Gesetze mit Änderungen anzeigen</span>
-    </transition>
+    <span>Alle Gesetze anzeigen</span>
   </label>
   <LawList :laws="laws ?? []">
     <template #default="{ law }">
