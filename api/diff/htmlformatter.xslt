@@ -203,10 +203,8 @@
     </xsl:template>
 
     <xsl:template match="I">
-        <em>
-            <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>
-            <xsl:call-template name="apply-diff-wrapper"/>
-        </em>
+        <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>
+        <xsl:call-template name="apply-diff-wrapper"/>
     </xsl:template>
 
     <xsl:template match="U">
