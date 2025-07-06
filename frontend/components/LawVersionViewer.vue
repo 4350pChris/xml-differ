@@ -65,7 +65,7 @@ onServerPrefetch(suspense);
         <TableOfContents class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28" :parent-element="diffEl" />
         <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
       </teleport>
-      <div ref="diffParent" :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']">
+      <div ref="diffParent" class="max-w-full" :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']">
         <template v-for="(paragraph, i) in diff" :key="`${i}-${paragraph.map((c) => c.length)}`">
           <ParagraphXMLViewer v-for="(content, j) in paragraph" :key="`p-${j}-${content.length}`" :content />
         </template>
