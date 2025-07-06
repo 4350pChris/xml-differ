@@ -41,15 +41,9 @@ class XmlToHtmlDiffStrategy(DiffStrategy):
 
 
 class XmlToSplitHtmlDiffStrategy(XmlToHtmlDiffStrategy):
-    def _remove_nodes(self, edit_html: str, class_name: str, tag_name: str):
+    def _remove_nodes(self, edit_html: str, tag_name: str):
         tree = ET.ElementTree(ET.fromstring(edit_html))
-        for node in tree.iter():
-            if (
-                "class" in node.attrib
-                and node.attrib["class"] == class_name
-                or node.tag == tag_name
-            ):
-                node.getparent().remove(node)
+        ET.strip_elements(tree, tag_name, with_tail=False)
 
         return ET.tostring(tree.getroot(), encoding="unicode")
 
@@ -58,8 +52,8 @@ class XmlToSplitHtmlDiffStrategy(XmlToHtmlDiffStrategy):
     ) -> List[str]:
         edit_html = super().__call__(left, right, options)[0]
 
-        left_tree_str = self._remove_nodes(edit_html, "diff-insert", "ins")
-        right_tree_str = self._remove_nodes(edit_html, "diff-delete", "del")
+        left_tree_str = self._remove_nodes(edit_html, "ins")
+        right_tree_str = self._remove_nodes(edit_html, "del")
 
         return [left_tree_str, right_tree_str]
 
