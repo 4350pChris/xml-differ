@@ -396,9 +396,9 @@
         <xsl:template name="apply-diff-wrapper">
         <xsl:choose>
             <!-- Only apply diff markup if this element has diff attributes AND no descendant has diff attributes -->
-<!--            <xsl:when test="@diff:insert and not(descendant::*[@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting])">-->
-<!--                <xsl:call-template name="mark-diff-insert"/>-->
-<!--            </xsl:when>-->
+            <xsl:when test="@diff:insert and not(descendant::*[@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting])">
+                <xsl:call-template name="mark-diff-insert"/>
+            </xsl:when>
             <xsl:when test="@diff:delete and not(descendant::*[@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting])">
                 <xsl:call-template name="mark-diff-delete"/>
             </xsl:when>
@@ -407,13 +407,6 @@
             </xsl:when>
             <xsl:when test="@diff:delete-formatting and not(descendant::*[@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting])">
                 <xsl:call-template name="mark-diff-delete-formatting"/>
-            </xsl:when>
-            <!-- If this element doesn't have diff attributes but ancestors do, and this element has no diff descendants, apply ancestor diff -->
-<!--            <xsl:when test="not(@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting) and ancestor::*[@diff:insert] and not(descendant::*[@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting])">-->
-<!--                <xsl:call-template name="mark-diff-insert"/>-->
-<!--            </xsl:when>-->
-            <xsl:when test="not(@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting) and ancestor::*[@diff:delete] and not(descendant::*[@diff:insert or @diff:delete or @diff:insert-formatting or @diff:delete-formatting])">
-                <xsl:call-template name="mark-diff-delete"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:apply-templates/>
