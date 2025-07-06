@@ -21,8 +21,8 @@ const versions = useSyncedUrlParam({
 });
 
 const options = useSyncedUrlParam({
-  fast_match: makeBoolOptions(false),
-  ratio_mode: makeStringOptions<DifferOptions["ratio_mode"]>("fast"),
+  fast_match: makeBoolOptions(true),
+  ratio_mode: makeStringOptions<DifferOptions["ratio_mode"]>("accurate"),
   F: makeFloatOptions(0.5),
   split: makeBoolOptions(false),
 });
