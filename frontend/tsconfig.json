@@ -16,7 +16,8 @@
       "ESNext"
     ],
     "types": [
-      "vite/client"
+      "vite/client",
+      "unplugin-fonts/client"
     ],
     "baseUrl": ".",
     "paths": {

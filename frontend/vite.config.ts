@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import vike from "vike/plugin";
 import path from "node:path";
+import Unfonts from "unplugin-fonts/vite";
 
 export default defineConfig({
   plugins: [
@@ -16,6 +17,11 @@ export default defineConfig({
     md({}),
     vueDevTools({
       launchEditor: "webstorm",
+    }),
+    Unfonts({
+      fontsource: {
+        families: ["Inter Variable"],
+      },
     }),
   ],
   resolve: {

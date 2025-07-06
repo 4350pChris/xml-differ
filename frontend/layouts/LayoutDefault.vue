@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts" setup>
+import "unfonts.css";
 import Content from "../components/Content.vue";
 </script>
 
@@ -12,11 +13,7 @@ import Content from "../components/Content.vue";
 /* see https://stackoverflow.com/questions/55206901/how-to-import-css-files-in-vue-3-child-components */
 @import "./tailwind.css";
 
-body {
-  margin: 0;
-  font-family: sans-serif;
-}
-* {
-  box-sizing: border-box;
+@theme {
+  --font-sans: "Inter Variable", sans-serif;
 }
 </style>
