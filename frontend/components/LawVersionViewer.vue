@@ -55,7 +55,7 @@ onServerPrefetch(suspense);
       <p>{{ law.long_title ?? law.short_title }}</p>
     </div>
     <DiffOptions
-      class="fixed bottom-4 left-24 md:left-28 lg:left-32"
+      class="fixed bottom-4 left-24 md:left-32 lg:left-36"
       :law
       :initial="{ ...versions, options }"
       @submit="handleSubmit"
