@@ -49,10 +49,6 @@ jobs:
             type=ref,event=branch,prefix=latest-
             type=sha,prefix=sha-
             type=semver,pattern={{version}}
-          flavor: |
-            latest
-            sha
-            semver
 
       - name: Build and push
         uses: docker/build-push-action@v6
