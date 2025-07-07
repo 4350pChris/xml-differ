@@ -1,7 +1,7 @@
 import vikeVue from "vike-vue/config";
 import vikeVueQuery from "vike-vue-query/config";
-import type { Config } from "vike/types";
 import Layout from "../layouts/LayoutDefault.vue";
+import { Config } from "vike/types";
 
 // Default config (can be overridden by pages)
 // https://vike.dev/config
@@ -14,5 +14,30 @@ export default {
   title: "German Law Diff",
   description: "Show differences between versions of German laws",
 
+  lang: "de",
+
+  passToClient: ["apiUrl"],
+
   extends: [vikeVue as typeof vikeVue, vikeVueQuery as typeof vikeVueQuery],
+
+  meta: {
+    apiUrl: {
+      env: {
+        server: true,
+        client: false,
+      },
+    },
+  },
 } satisfies Config;
+
+declare global {
+  namespace Vike {
+    interface PageContext {
+      apiUrl: string;
+    }
+
+    interface Config {
+      apiUrl?: string;
+    }
+  }
+}
