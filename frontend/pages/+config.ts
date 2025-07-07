@@ -1,5 +1,6 @@
 import vikeVue from "vike-vue/config";
 import vikeVueQuery from "vike-vue-query/config";
+import vikeServer from "vike-server/config";
 import Layout from "../layouts/LayoutDefault.vue";
 import { Config } from "vike/types";
 
@@ -18,7 +19,9 @@ export default {
 
   passToClient: ["apiUrl"],
 
-  extends: [vikeVue as typeof vikeVue, vikeVueQuery as typeof vikeVueQuery],
+  extends: [vikeVue, vikeVueQuery, vikeServer],
+
+  server: "./server/h3-entry.ts",
 
   meta: {
     apiUrl: {
@@ -37,7 +40,7 @@ declare global {
     }
 
     interface Config {
-      apiUrl?: string;
+      apiUrl?: { ssr: string; client: string };
     }
   }
 }
