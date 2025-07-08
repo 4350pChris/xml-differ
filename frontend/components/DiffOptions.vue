@@ -51,7 +51,7 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
 
 <template>
   <button
-    class="btn btn-circle bg-base-100 btn-outline md:btn-lg lg:btn-xl z-40"
+    class="btn btn-circle bg-base-100 btn-outline md:btn-lg lg:btn-xl z-10"
     v-bind="$attrs"
     title="Optionen"
     @click="modalEl?.showModal()"

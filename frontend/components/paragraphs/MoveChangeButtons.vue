@@ -50,7 +50,7 @@ const pulseTimeout = useTimeoutFn((node: HTMLElement | undefined) => {
 </script>
 
 <template>
-  <div class="join bg-base-100 z-40 shadow-lg rounded-box">
+  <div class="join bg-base-100 z-10 shadow-lg rounded-box">
     <button class="btn btn-square btn-ghost join-item" title="Vorherige Änderung" @click="prev()">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
         <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
