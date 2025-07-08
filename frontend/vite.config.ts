@@ -8,6 +8,9 @@ import path from "node:path";
 import Unfonts from "unplugin-fonts/vite";
 
 export default defineConfig({
+  define: {
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "true",
+  },
   plugins: [
     vike({}),
     tailwindcss(),
