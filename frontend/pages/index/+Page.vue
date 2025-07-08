@@ -4,7 +4,7 @@
     <input v-model="params.all" type="checkbox" class="checkbox" name="all" />
     <span>Alle Gesetze anzeigen</span>
   </label>
-  <LawList :laws="laws ?? []">
+  <LawList v-if="laws" :laws>
     <template #default="{ law }">
       <span class="inline-block w-full">{{ law.name }}</span>
       <span class="text-xs text-gray-500">{{ law.long_title ?? law.short_title }}</span>
