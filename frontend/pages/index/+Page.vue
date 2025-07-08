@@ -6,8 +6,8 @@
   </label>
   <LawList :laws="laws ?? []">
     <template #default="{ law }">
-      <div>{{ law.name }}</div>
-      <div class="text-xs text-gray-500">{{ law.long_title ?? law.short_title }}</div>
+      <span class="inline-block w-full">{{ law.name }}</span>
+      <span class="text-xs text-gray-500">{{ law.long_title ?? law.short_title }}</span>
     </template>
   </LawList>
 </template>
