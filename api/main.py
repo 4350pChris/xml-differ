@@ -60,7 +60,7 @@ app.include_router(diff.router)
 
 @app.post("/import", status_code=status.HTTP_202_ACCEPTED)
 async def start_work(queue: Annotated[Queue, Depends(get_queue)]):
-    queue.enqueue(run_import, job_timeout="6h")
+    queue.enqueue(run_import, MONGO_CONNECTION_STRING, job_timeout="6h")
     return {"message": "Work started successfully"}
 
 
