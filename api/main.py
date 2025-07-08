@@ -1,4 +1,5 @@
 import logging
+import os
 from contextlib import asynccontextmanager
 from typing import Annotated
 
@@ -21,10 +22,16 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
+# Environment variables
+MONGO_CONNECTION_STRING = os.environ.get("MONGODB_URI")
+CORS_ORIGINS = os.environ.get(
+    "CORS_ORIGINS", "http://localhost,http://localhost:5173"
+).split(",")
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    mongo_client = await init_db()
+    mongo_client = await init_db(MONGO_CONNECTION_STRING)
     redis_conn = get_redis_connection()
     FastAPICache.init(RedisBackend(redis_conn), prefix="fastapi-cache")
 
@@ -39,14 +46,9 @@ app = FastAPI(
     description="API for comparing XML files of German laws",
 )
 
-origins = [
-    "http://localhost",
-    "http://localhost:5173",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )

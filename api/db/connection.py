@@ -1,4 +1,3 @@
-import os
 from logging import getLogger
 
 from beanie import init_beanie
@@ -8,13 +7,11 @@ from db.models import Law, Paragraph, LawVersion
 
 logger = getLogger(__name__)
 
-CONNECTION_STRING = os.environ["MONGODB_URI"]
 
-
-async def init_db():
+async def init_db(connection_string: str):
     # Startup
-    logger.info("Connecting to database at %s", CONNECTION_STRING)
-    mongodb_client = AsyncIOMotorClient(CONNECTION_STRING)
+    logger.info("Connecting to database at %s", connection_string)
+    mongodb_client = AsyncIOMotorClient(connection_string)
     database = mongodb_client.get_database("laws")
     await init_beanie(database=database, document_models=[Paragraph, LawVersion, Law])
 
