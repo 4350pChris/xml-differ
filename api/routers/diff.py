@@ -4,6 +4,7 @@ from typing import List, Annotated
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
+from fastapi_cache.decorator import cache
 
 from diff.differ import (
     diff_files,
@@ -32,6 +33,7 @@ def get_diff_strategy(
 @router.get(
     "/{left_version_id}/{right_version_id}", response_description="Diff endpoint"
 )
+@cache(expire=3600)
 async def get_diff(
     left_version_id: PydanticObjectId,
     right_version_id: PydanticObjectId,
