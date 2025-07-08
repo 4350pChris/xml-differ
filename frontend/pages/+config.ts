@@ -40,7 +40,7 @@ declare global {
     }
 
     interface Config {
-      apiUrl?: { ssr: string; client: string };
+      apiUrl?: string;
     }
   }
 }
