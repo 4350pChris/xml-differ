@@ -8,7 +8,7 @@ const queryClientConfig: QueryClientConfig = {
     queries: {
       // Don't refetch when window loses or gains focus during development
       refetchOnWindowFocus: import.meta.env.PROD,
-      // staleTime: 1000 * 60 * 5,
+      staleTime: 1000 * 60 * 5,
     },
   },
 };

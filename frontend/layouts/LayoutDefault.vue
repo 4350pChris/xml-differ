@@ -7,6 +7,13 @@
 <script lang="ts" setup>
 import "unfonts.css";
 import Content from "../components/Content.vue";
+import { client } from "../client/client.gen";
+import { usePageContext } from "vike-vue/usePageContext";
+
+const pageContext = usePageContext();
+client.setConfig({
+  baseUrl: pageContext.apiUrl,
+});
 </script>
 
 <style>
