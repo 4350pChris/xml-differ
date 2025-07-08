@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_description="List of paragraphs")
+@router.get("", response_description="List of paragraphs")
 async def get_paragraphs(
     version_id: PydanticObjectId, page: int = 1, limit: int = 100
 ) -> PaginatedParagraphCollection:
