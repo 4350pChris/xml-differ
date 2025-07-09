@@ -33,4 +33,5 @@ class HTMLFormatter(formatting.XMLFormatter):
         with (Path(__file__).parent / "htmlformatter.xslt").open() as f:
             xslt_template = ET.fromstring(f.read())
             transform = ET.XSLT(xslt_template)
-            return super(HTMLFormatter, self).render(transform(result))
+            transformed = transform(result)
+            return super(HTMLFormatter, self).render(transformed)
