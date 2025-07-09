@@ -115,17 +115,8 @@
 
     <!-- ====== TEXT CONTENT ELEMENTS ====== -->
 
-    <xsl:template match="textdaten">
-<!--        <div class="textdaten">-->
-            <xsl:apply-templates/>
-<!--        </div>-->
-    </xsl:template>
-
-    <xsl:template match="text">
-<!--        <div class="text">-->
-<!--            <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>-->
-            <xsl:apply-templates/>
-<!--        </div>-->
+    <xsl:template match="Content|textdaten|text">
+        <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="fussnoten[node()]">
@@ -143,13 +134,6 @@
             <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>
             <xsl:apply-templates/>
         </div>
-    </xsl:template>
-
-    <xsl:template match="Content">
-<!--        <div class="content">-->
-<!--            <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>-->
-            <xsl:apply-templates/>
-<!--        </div>-->
     </xsl:template>
 
     <xsl:template match="Revision">
