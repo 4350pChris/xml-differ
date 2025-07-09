@@ -50,6 +50,13 @@
         </del>
     </xsl:template>
 
+    <xsl:template match="*[ @diff:rename ]">
+        <xsl:element name="{@diff:rename}">
+            <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff') and not(name()='diff:rename')]"/>
+            <xsl:call-template name="apply-diff-wrapper"/>
+        </xsl:element>
+    </xsl:template>
+
     <!-- ====== METADATA ELEMENTS ====== -->
 
     <xsl:template match="metadaten">
@@ -187,8 +194,10 @@
     </xsl:template>
 
     <xsl:template match="I">
-        <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>
-        <xsl:call-template name="apply-diff-wrapper"/>
+        <em>
+            <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>
+            <xsl:call-template name="apply-diff-wrapper"/>
+        </em>
     </xsl:template>
 
     <xsl:template match="U">
