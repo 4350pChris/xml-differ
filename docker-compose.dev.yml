@@ -11,6 +11,10 @@ services:
         - action: rebuild
           path: ./api./uv.lock
 
+  redis:
+    ports:
+      - "6379:6379"
+
   mongo:
     ports:
       - "27017:27017"

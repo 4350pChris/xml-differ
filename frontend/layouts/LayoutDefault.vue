@@ -11,8 +11,9 @@ import { client } from "../client/client.gen";
 import { usePageContext } from "vike-vue/usePageContext";
 
 const pageContext = usePageContext();
+const { apiUrl } = pageContext;
 client.setConfig({
-  baseUrl: pageContext.apiUrl,
+  baseUrl: import.meta.env.SSR ? apiUrl.ssr : apiUrl.client,
 });
 </script>
 

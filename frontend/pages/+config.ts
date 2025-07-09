@@ -36,7 +36,7 @@ export default {
 declare global {
   namespace Vike {
     interface PageContext {
-      apiUrl: string;
+      apiUrl: { ssr: string; client: string };
     }
 
     interface Config {
