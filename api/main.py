@@ -12,7 +12,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from rq import Queue
 
 from db.connection import close_db, init_db
-from dependencies import get_queue, get_redis_connection
+from dependencies import get_queue, get_async_redis_connection
 from routers import diff, laws, paragraphs
 from worker.tasks import run_import
 
@@ -32,7 +32,7 @@ CORS_ORIGINS = os.environ.get(
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     mongo_client = await init_db(MONGO_CONNECTION_STRING)
-    redis_conn = get_redis_connection()
+    redis_conn = get_async_redis_connection()
     FastAPICache.init(RedisBackend(redis_conn), prefix="fastapi-cache")
 
     yield
