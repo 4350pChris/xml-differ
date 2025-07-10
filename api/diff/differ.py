@@ -41,7 +41,8 @@ class XmlToHtmlDiffStrategy(DiffStrategy):
 
 
 class XmlToSplitHtmlDiffStrategy(XmlToHtmlDiffStrategy):
-    def _remove_nodes(self, edit_html: str, tag_name: str):
+    @staticmethod
+    def _remove_nodes(edit_html: str, tag_name: str):
         tree = ET.ElementTree(ET.fromstring(edit_html))
         ET.strip_elements(tree, tag_name, with_tail=False)
 
@@ -52,16 +53,12 @@ class XmlToSplitHtmlDiffStrategy(XmlToHtmlDiffStrategy):
     ) -> List[str]:
         edit_html = super().__call__(left, right, options)[0]
 
-        left_tree_str = self._remove_nodes(edit_html, "ins")
-        right_tree_str = self._remove_nodes(edit_html, "del")
-
-        return [left_tree_str, right_tree_str]
+        return [self._remove_nodes(edit_html, tag) for tag in ["ins", "del"]]
 
 
 def diff_files(
     diff_strategy: DiffStrategy, options: DifferOptions, left: str, right: str
 ) -> List[str]:
-    left_tree = ET.ElementTree(ET.fromstring(left))
-    right_tree = ET.ElementTree(ET.fromstring(right))
+    trees = [ET.ElementTree(ET.fromstring(xml)) for xml in (left, right)]
 
-    return diff_strategy(left_tree, right_tree, options)
+    return diff_strategy(*trees, options)
