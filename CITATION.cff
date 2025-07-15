@@ -1,0 +1,30 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: xml-differ
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Chris-Robin
+    family-names: Ennen
+    email: cite@ennen.dev
+date-released: '2025-07-15'
+repository-code: 'https://github.com/4350pChris/xml-differ'
+abstract: >-
+  Webapp for comparing German laws dating back to 2019.
+keywords:
+  - XML
+  - Legal Texts
+  - python
+  - Germany
+  - Bachelor
+  - Vue
+  - Vike
+  - Typescript
+  - Thesis
+  - FastAPI
+  - Diff
+license: MIT
