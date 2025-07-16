@@ -34,7 +34,7 @@ export function useParsedDiff(diff: MaybeRefOrGetter<string[][] | undefined>) {
       const change = getChangeType(docs);
       return docs.map((doc, index) => ({
         doc,
-        id: index + (doc.getAttribute("doknr") || ""),
+        id: "p" + index + (doc.getAttribute("doknr") || ""),
         change,
       }));
     });

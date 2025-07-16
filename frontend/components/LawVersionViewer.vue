@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { LawDetailProjection } from "../client";
-import { computed, onMounted, onServerPrefetch, ref, useTemplateRef } from "vue";
+import { computed, nextTick, onMounted, onServerPrefetch, ref, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import DiffOptions, { type DifferOptions } from "./DiffOptions.vue";
@@ -14,7 +14,7 @@ import {
 } from "../composables/useSyncedUrlParam";
 import { clientOnly } from "vike-vue/clientOnly";
 import { useParsedDiff } from "../composables/useParsedDiff";
-import { useVirtualizer, useWindowVirtualizer } from "@tanstack/vue-virtual";
+import { useWindowVirtualizer } from "@tanstack/vue-virtual";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 
@@ -54,10 +54,6 @@ onServerPrefetch(suspense);
 
 const parsedDiff = useParsedDiff(diff);
 
-const allRows = computed(() => {
-  return parsedDiff.value.map((paragraphDiffs) => paragraphDiffs.flat());
-});
-
 const parentOffsetRef = ref(0);
 
 onMounted(() => {
@@ -65,9 +61,10 @@ onMounted(() => {
 });
 
 const virtualizerOptions = computed(() => ({
-  count: allRows.value.length,
+  count: parsedDiff.value.length,
   estimateSize: () => 500,
-  scrollMargin: parentOffsetRef.value,
+  scrollMargin: parentOffsetRef.value - 64,
+  overscan: 10,
 }));
 
 const rowVirtualizer = useWindowVirtualizer(virtualizerOptions);
@@ -76,14 +73,63 @@ const virtualRows = computed(() => rowVirtualizer.value.getVirtualItems());
 
 const totalSize = computed(() => rowVirtualizer.value.getTotalSize());
 
-const measureElement = (el) => {
+const measureElement = async (el: Element) => {
+  await nextTick();
   if (!el) {
     return;
   }
 
   rowVirtualizer.value.measureElement(el);
+};
 
-  return undefined;
+// map every change index to a row index
+const paragraphByChangeIndex = computed(() => {
+  return parsedDiff.value.reduce(
+    (acc, diffs, rowIndex) => {
+      const innerIndexMap = diffs.flatMap((diff, paragraphIndex) => {
+        const diffCount = diff.doc.querySelectorAll(".diff-del, .diff-insert").length;
+        return Array.from({ length: diffCount }, (_, changeIndex) => ({
+          rowIndex,
+          paragraphIndex,
+          changeIndex,
+        }));
+      });
+
+      acc.push(...innerIndexMap);
+      return acc;
+    },
+    [] as { rowIndex: number; paragraphIndex: number; changeIndex: number }[],
+  );
+});
+
+const visibilityClassList = ["animate-pulse", "outline", "outline-blue-500"];
+
+const scrollToIndex = (index: number) => rowVirtualizer.value.scrollToIndex(index, { align: "start" });
+
+const scrollToChange = async (index: number) => {
+  const { rowIndex, paragraphIndex, changeIndex } = paragraphByChangeIndex.value[index];
+  if (!virtualRows.value.some((row) => row.index === rowIndex)) {
+    scrollToIndex(rowIndex);
+    await nextTick();
+  }
+
+  const oldCurrent = diffEl.value?.querySelector(".current");
+  oldCurrent?.classList.remove("current");
+  const paragraph = parsedDiff.value[rowIndex][paragraphIndex];
+  const paragraphEl = diffEl.value?.querySelector(`#${paragraph.id}`) as HTMLElement;
+  const newCurrent = paragraphEl?.querySelectorAll(".diff-del, .diff-insert")[changeIndex] as HTMLElement;
+  newCurrent?.classList.add("current", ...visibilityClassList);
+  newCurrent?.scrollIntoView({ behavior: "smooth" });
+  setTimeout(() => {
+    newCurrent?.classList.remove(...visibilityClassList);
+  }, 2000);
+};
+
+const scrollToItem = (id: string) => {
+  const row = parsedDiff.value.findIndex((row) => row.some((paragraph) => paragraph.id === id));
+  if (row > -1) {
+    scrollToIndex(row);
+  }
 };
 </script>
 
@@ -103,12 +149,17 @@ const measureElement = (el) => {
     <p v-else-if="status === 'error'" class="text-error-content">Fehler beim Laden</p>
     <template v-else-if="diff">
       <teleport to="#teleported">
-        <!--        <TableOfContents-->
-        <!--          class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28"-->
-        <!--          :diffs="parsedDiff"-->
-        <!--          :parent-element="diffEl"-->
-        <!--        />-->
-        <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
+        <TableOfContents
+          class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28"
+          :diffs="parsedDiff"
+          :parent-element="diffEl"
+          @scroll-to="scrollToItem"
+        />
+        <MoveChangeButtons
+          class="fixed bottom-4 right-4"
+          :count="paragraphByChangeIndex.length"
+          @update:index="scrollToChange"
+        />
       </teleport>
       <div ref="diffParent">
         <div
@@ -126,12 +177,12 @@ const measureElement = (el) => {
             <div
               v-for="virtualRow in virtualRows"
               :key="virtualRow.key as string"
-              :ref="measureElement"
+              :ref="(el) => measureElement(el as Element)"
               :data-index="virtualRow.index"
               :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']"
             >
               <ParagraphXMLViewer
-                v-for="row in allRows[virtualRow.index]"
+                v-for="row in parsedDiff[virtualRow.index]"
                 :key="`${virtualRow.key}-${row.id}`"
                 :diff="row"
               />

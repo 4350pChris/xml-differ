@@ -1,53 +1,30 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useCycleList, useMutationObserver, useTimeoutFn, whenever } from "@vueuse/core";
+import { computed, watch } from "vue";
+import { useCycleList } from "@vueuse/core";
 
 const props = defineProps<{
-  parentElement: HTMLElement | null;
+  count: number;
 }>();
 
-// get all diff elements from the parent element
-const diffs = ref<HTMLElement[]>([]);
+const emits = defineEmits<{
+  "update:index": [number];
+}>();
 
-const setDiffs = () => {
-  if (props.parentElement) {
-    const diffElements = props.parentElement.querySelectorAll<HTMLElement>(".diff-insert, .diff-del");
-    diffs.value = Array.from(diffElements);
-  } else {
-    diffs.value = [];
-  }
-};
-
-whenever(() => props.parentElement, setDiffs, { immediate: true });
-
-useMutationObserver(() => props.parentElement, setDiffs, { childList: true, subtree: true });
-
-const { next, prev, index: _index, go } = useCycleList(diffs);
+const { next, prev, index: _index, go } = useCycleList(Array.from({ length: props.count }, (_, i) => i));
 
 const index = computed({
   get: () => _index.value + 1, // +1 for 1-based index
   set: (value: number) => {
-    if (value < 1 || value > diffs.value.length) {
+    if (value < 1 || value > props.count) {
       return;
     }
     go(value - 1); // -1 for 0-based index
   },
 });
 
-const visibilityClassList = ["animate-pulse", "outline", "outline-blue-500"];
-
-watch(index, () => {
-  const oldCurrent = props.parentElement?.querySelector("current");
-  oldCurrent?.classList.remove("current");
-  const newCurrent = diffs.value[_index.value];
-  newCurrent.classList.add("current", ...visibilityClassList);
-  newCurrent.scrollIntoView({ behavior: "smooth" });
-  pulseTimeout.start(newCurrent);
+watch(_index, (newIndex) => {
+  emits("update:index", newIndex);
 });
-
-const pulseTimeout = useTimeoutFn((node: HTMLElement | undefined) => {
-  node?.classList.remove(...visibilityClassList);
-}, 2000);
 </script>
 
 <template>
@@ -72,15 +49,8 @@ const pulseTimeout = useTimeoutFn((node: HTMLElement | undefined) => {
           d="m12.05 19l2.85-2.825l-2.85-2.825L11 14.4l1.075 1.075q-.7.025-1.362-.225t-1.188-.775q-.5-.5-.763-1.15t-.262-1.3q0-.425.113-.85t.312-.825l-1.1-1.1q-.425.625-.625 1.325T7 12q0 .95.375 1.875t1.1 1.65t1.625 1.088t1.85.387l-.95.95zm4.125-4.25q.425-.625.625-1.325T17 12q0-.95-.363-1.888T15.55 8.45t-1.638-1.075t-1.862-.35L13 6.05L11.95 5L9.1 7.825l2.85 2.825L13 9.6l-1.1-1.1q.675 0 1.375.263t1.2.762t.763 1.15t.262 1.3q0 .425-.112.85t-.313.825zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"
         />
       </svg>
-      <input v-model.number="index" name="change" min="1" :max="diffs.length" type="number" title="Gehe zu Änderung" />
+      <input v-model.number="index" name="change" min="1" :max="count" type="number" title="Gehe zu Änderung" />
     </label>
-    <span class="join-item self-center-safe px-2"> / {{ diffs.length }} </span>
+    <span class="join-item self-center-safe px-2"> / {{ count }} </span>
   </div>
 </template>
-
-<style>
-.diff-insert,
-.diff-del {
-  scroll-margin-top: 4.5rem;
-}
-</style>

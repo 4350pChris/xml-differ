@@ -9,6 +9,10 @@ const props = defineProps<{
   parentElement: HTMLElement | null;
 }>();
 
+const emits = defineEmits<{
+  scrollTo: [id: string];
+}>();
+
 // get all diff elements from the parent element
 const headerElements = computed(() => {
   if (props.parentElement) {
@@ -80,6 +84,7 @@ watch(visibleElement, (newVisible) => {
         :href="item.href"
         class="inline-flex w-full px-2 py-1 hover:bg-base-200"
         :title="`Zu ${item.name} springen`"
+        @click.prevent="emits('scrollTo', item.href.slice(1))"
       >
         <div class="indicator grow">
           <ChangeIndicator :change="item.change" />

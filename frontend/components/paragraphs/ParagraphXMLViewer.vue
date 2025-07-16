@@ -37,11 +37,11 @@ defineProps<{ diff: ParsedDiff }>();
 
 :deep(.diff-insert) {
   text-decoration: none;
-  @apply bg-success/30 border-success p-1;
+  @apply bg-success/30 border-success p-1 scroll-mt-20;
 }
 
 :deep(.diff-del) {
   text-decoration: none;
-  @apply bg-error/30 border-error p-1;
+  @apply bg-error/30 border-error p-1 scroll-mt-20;
 }
 </style>
