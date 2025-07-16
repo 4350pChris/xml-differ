@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { LawDetailProjection } from "../client";
-import { computed, onServerPrefetch, useTemplateRef } from "vue";
+import { computed, onMounted, onServerPrefetch, ref, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import DiffOptions, { type DifferOptions } from "./DiffOptions.vue";
@@ -14,6 +14,7 @@ import {
 } from "../composables/useSyncedUrlParam";
 import { clientOnly } from "vike-vue/clientOnly";
 import { useParsedDiff } from "../composables/useParsedDiff";
+import { useVirtualizer, useWindowVirtualizer } from "@tanstack/vue-virtual";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 
@@ -52,10 +53,42 @@ const { data: diff, status, suspense } = useQuery(queryOptions);
 onServerPrefetch(suspense);
 
 const parsedDiff = useParsedDiff(diff);
+
+const allRows = computed(() => {
+  return parsedDiff.value.map((paragraphDiffs) => paragraphDiffs.flat());
+});
+
+const parentOffsetRef = ref(0);
+
+onMounted(() => {
+  parentOffsetRef.value = diffEl.value?.offsetTop ?? 0;
+});
+
+const virtualizerOptions = computed(() => ({
+  count: allRows.value.length,
+  estimateSize: () => 500,
+  scrollMargin: parentOffsetRef.value,
+}));
+
+const rowVirtualizer = useWindowVirtualizer(virtualizerOptions);
+
+const virtualRows = computed(() => rowVirtualizer.value.getVirtualItems());
+
+const totalSize = computed(() => rowVirtualizer.value.getTotalSize());
+
+const measureElement = (el) => {
+  if (!el) {
+    return;
+  }
+
+  rowVirtualizer.value.measureElement(el);
+
+  return undefined;
+};
 </script>
 
 <template>
-  <div class="mx-auto flex flex-col items-center min-w-0 w-full">
+  <div class="mx-auto min-w-0 w-full">
     <div class="prose self-start">
       <h1>{{ law.name }}</h1>
       <p>{{ law.long_title ?? law.short_title }}</p>
@@ -70,15 +103,41 @@ const parsedDiff = useParsedDiff(diff);
     <p v-else-if="status === 'error'" class="text-error-content">Fehler beim Laden</p>
     <template v-else-if="diff">
       <teleport to="#teleported">
-        <TableOfContents
-          class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28"
-          :diffs="parsedDiff"
-          :parent-element="diffEl"
-        />
+        <!--        <TableOfContents-->
+        <!--          class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28"-->
+        <!--          :diffs="parsedDiff"-->
+        <!--          :parent-element="diffEl"-->
+        <!--        />-->
         <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
       </teleport>
-      <div ref="diffParent" class="max-w-full" :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']">
-        <ParagraphXMLViewer v-for="diff in parsedDiff.flat()" :key="diff.id" :diff="diff" />
+      <div ref="diffParent">
+        <div
+          class="w-full relative"
+          :style="{
+            height: `${totalSize}px`,
+          }"
+        >
+          <div
+            class="absolute top-0 left-0 w-full"
+            :style="{
+              transform: `translateY(${virtualRows[0]?.start - rowVirtualizer.options.scrollMargin}px)`,
+            }"
+          >
+            <div
+              v-for="virtualRow in virtualRows"
+              :key="virtualRow.key as string"
+              :ref="measureElement"
+              :data-index="virtualRow.index"
+              :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']"
+            >
+              <ParagraphXMLViewer
+                v-for="row in allRows[virtualRow.index]"
+                :key="`${virtualRow.key}-${row.id}`"
+                :diff="row"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </template>
   </div>

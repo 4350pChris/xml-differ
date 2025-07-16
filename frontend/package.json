@@ -9,6 +9,7 @@
   "dependencies": {
     "@hattip/polyfills": "^0.0.49",
     "@tanstack/vue-query": "^5.81.5",
+    "@tanstack/vue-virtual": "^3.13.12",
     "@universal-middleware/core": "^0.4.0",
     "@universal-middleware/h3": "^0.4.0",
     "@vitejs/plugin-vue": "^5.2.1",
