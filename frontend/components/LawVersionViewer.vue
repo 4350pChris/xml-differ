@@ -56,7 +56,7 @@ const parsedDiff = useParsedDiff(diff);
 
 <template>
   <div class="mx-auto flex flex-col items-center min-w-0 w-full">
-    <div class="prose">
+    <div class="prose self-start">
       <h1>{{ law.name }}</h1>
       <p>{{ law.long_title ?? law.short_title }}</p>
     </div>
