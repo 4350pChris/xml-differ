@@ -4,104 +4,104 @@
  * HTTPValidationError
  */
 export type HttpValidationError = {
-    /**
-     * Detail
-     */
-    detail?: Array<ValidationError>;
+  /**
+   * Detail
+   */
+  detail?: Array<ValidationError>;
 };
 
 /**
  * LawDetailProjection
  */
 export type LawDetailProjection = {
-    id: PydanticObjectId;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Short Title
-     */
-    short_title?: string | null;
-    /**
-     * Long Title
-     */
-    long_title?: string | null;
-    /**
-     * Versions
-     */
-    versions: Array<LawVersionListProjection>;
+  id: PydanticObjectId;
+  /**
+   * Name
+   */
+  name: string;
+  /**
+   * Short Title
+   */
+  short_title?: string | null;
+  /**
+   * Long Title
+   */
+  long_title?: string | null;
+  /**
+   * Versions
+   */
+  versions: Array<LawVersionListProjection>;
 };
 
 /**
  * LawListProjection
  */
 export type LawListProjection = {
-    id: PydanticObjectId;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Short Title
-     */
-    short_title?: string | null;
-    /**
-     * Long Title
-     */
-    long_title?: string | null;
+  id: PydanticObjectId;
+  /**
+   * Name
+   */
+  name: string;
+  /**
+   * Short Title
+   */
+  short_title?: string | null;
+  /**
+   * Long Title
+   */
+  long_title?: string | null;
 };
 
 /**
  * LawVersionListProjection
  */
 export type LawVersionListProjection = {
-    id: PydanticObjectId;
-    /**
-     * Date
-     */
-    date: string;
+  id: PydanticObjectId;
+  /**
+   * Date
+   */
+  date: string;
 };
 
 /**
  * PaginatedParagraphCollection
  */
 export type PaginatedParagraphCollection = {
-    /**
-     * Total
-     */
-    total: number;
-    /**
-     * Page
-     */
-    page: number;
-    /**
-     * Limit
-     */
-    limit: number;
-    /**
-     * Paragraphs
-     */
-    paragraphs: Array<ParagraphProjection>;
+  /**
+   * Total
+   */
+  total: number;
+  /**
+   * Page
+   */
+  page: number;
+  /**
+   * Limit
+   */
+  limit: number;
+  /**
+   * Paragraphs
+   */
+  paragraphs: Array<ParagraphProjection>;
 };
 
 /**
  * ParagraphProjection
  */
 export type ParagraphProjection = {
-    id: PydanticObjectId;
-    /**
-     * Index
-     */
-    index: number;
-    /**
-     * Title
-     */
-    title: string;
-    /**
-     * Content
-     */
-    content: string;
+  id: PydanticObjectId;
+  /**
+   * Index
+   */
+  index: number;
+  /**
+   * Title
+   */
+  title: string;
+  /**
+   * Content
+   */
+  content: string;
 };
 
 export type PydanticObjectId = string;
@@ -110,190 +110,194 @@ export type PydanticObjectId = string;
  * ValidationError
  */
 export type ValidationError = {
-    /**
-     * Location
-     */
-    loc: Array<string | number>;
-    /**
-     * Message
-     */
-    msg: string;
-    /**
-     * Error Type
-     */
-    type: string;
+  /**
+   * Location
+   */
+  loc: Array<string | number>;
+  /**
+   * Message
+   */
+  msg: string;
+  /**
+   * Error Type
+   */
+  type: string;
 };
 
 export type GetLawsLawsGetData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * All
-         */
-        all?: boolean;
-    };
-    url: '/laws';
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * All
+     */
+    all?: boolean;
+  };
+  url: "/laws";
 };
 
 export type GetLawsLawsGetErrors = {
-    /**
-     * Not found
-     */
-    404: unknown;
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
+  /**
+   * Not found
+   */
+  404: unknown;
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
 };
 
 export type GetLawsLawsGetError = GetLawsLawsGetErrors[keyof GetLawsLawsGetErrors];
 
 export type GetLawsLawsGetResponses = {
-    /**
-     * Response Get Laws Laws Get
-     * List of laws
-     */
-    200: Array<LawListProjection>;
+  /**
+   * Response Get Laws Laws Get
+   * List of laws
+   */
+  200: Array<LawListProjection>;
 };
 
 export type GetLawsLawsGetResponse = GetLawsLawsGetResponses[keyof GetLawsLawsGetResponses];
 
 export type GetLawLawsLawIdGetData = {
-    body?: never;
-    path: {
-        law_id: PydanticObjectId;
-    };
-    query?: never;
-    url: '/laws/{law_id}';
+  body?: never;
+  path: {
+    law_id: PydanticObjectId;
+  };
+  query?: never;
+  url: "/laws/{law_id}";
 };
 
 export type GetLawLawsLawIdGetErrors = {
-    /**
-     * Not found
-     */
-    404: unknown;
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
+  /**
+   * Not found
+   */
+  404: unknown;
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
 };
 
 export type GetLawLawsLawIdGetError = GetLawLawsLawIdGetErrors[keyof GetLawLawsLawIdGetErrors];
 
 export type GetLawLawsLawIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: LawDetailProjection;
+  /**
+   * Successful Response
+   */
+  200: LawDetailProjection;
 };
 
 export type GetLawLawsLawIdGetResponse = GetLawLawsLawIdGetResponses[keyof GetLawLawsLawIdGetResponses];
 
 export type GetParagraphsVersionsVersionIdParagraphsGetData = {
-    body?: never;
-    path: {
-        version_id: PydanticObjectId;
-    };
-    query?: {
-        /**
-         * Page
-         */
-        page?: number;
-        /**
-         * Limit
-         */
-        limit?: number;
-    };
-    url: '/versions/{version_id}/paragraphs/';
+  body?: never;
+  path: {
+    version_id: PydanticObjectId;
+  };
+  query?: {
+    /**
+     * Page
+     */
+    page?: number;
+    /**
+     * Limit
+     */
+    limit?: number;
+  };
+  url: "/versions/{version_id}/paragraphs/";
 };
 
 export type GetParagraphsVersionsVersionIdParagraphsGetErrors = {
-    /**
-     * Not found
-     */
-    404: unknown;
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
+  /**
+   * Not found
+   */
+  404: unknown;
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
 };
 
-export type GetParagraphsVersionsVersionIdParagraphsGetError = GetParagraphsVersionsVersionIdParagraphsGetErrors[keyof GetParagraphsVersionsVersionIdParagraphsGetErrors];
+export type GetParagraphsVersionsVersionIdParagraphsGetError =
+  GetParagraphsVersionsVersionIdParagraphsGetErrors[keyof GetParagraphsVersionsVersionIdParagraphsGetErrors];
 
 export type GetParagraphsVersionsVersionIdParagraphsGetResponses = {
-    /**
-     * List of paragraphs
-     */
-    200: PaginatedParagraphCollection;
+  /**
+   * List of paragraphs
+   */
+  200: PaginatedParagraphCollection;
 };
 
-export type GetParagraphsVersionsVersionIdParagraphsGetResponse = GetParagraphsVersionsVersionIdParagraphsGetResponses[keyof GetParagraphsVersionsVersionIdParagraphsGetResponses];
+export type GetParagraphsVersionsVersionIdParagraphsGetResponse =
+  GetParagraphsVersionsVersionIdParagraphsGetResponses[keyof GetParagraphsVersionsVersionIdParagraphsGetResponses];
 
 export type GetDiffDiffLeftVersionIdRightVersionIdGetData = {
-    body?: never;
-    path: {
-        left_version_id: PydanticObjectId;
-        right_version_id: PydanticObjectId;
-    };
-    query: {
-        /**
-         * Fast Match
-         */
-        fast_match: boolean;
-        /**
-         * F
-         */
-        F: number;
-        /**
-         * Ratio Mode
-         */
-        ratio_mode: 'accurate' | 'fast' | 'faster';
-        /**
-         * Split
-         */
-        split: boolean;
-    };
-    url: '/diff/{left_version_id}/{right_version_id}';
+  body?: never;
+  path: {
+    left_version_id: PydanticObjectId;
+    right_version_id: PydanticObjectId;
+  };
+  query: {
+    /**
+     * Fast Match
+     */
+    fast_match: boolean;
+    /**
+     * F
+     */
+    F: number;
+    /**
+     * Ratio Mode
+     */
+    ratio_mode: "accurate" | "fast" | "faster";
+    /**
+     * Split
+     */
+    split: boolean;
+  };
+  url: "/diff/{left_version_id}/{right_version_id}";
 };
 
 export type GetDiffDiffLeftVersionIdRightVersionIdGetErrors = {
-    /**
-     * Not found
-     */
-    404: unknown;
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
+  /**
+   * Not found
+   */
+  404: unknown;
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
 };
 
-export type GetDiffDiffLeftVersionIdRightVersionIdGetError = GetDiffDiffLeftVersionIdRightVersionIdGetErrors[keyof GetDiffDiffLeftVersionIdRightVersionIdGetErrors];
+export type GetDiffDiffLeftVersionIdRightVersionIdGetError =
+  GetDiffDiffLeftVersionIdRightVersionIdGetErrors[keyof GetDiffDiffLeftVersionIdRightVersionIdGetErrors];
 
 export type GetDiffDiffLeftVersionIdRightVersionIdGetResponses = {
-    /**
-     * Response Get Diff Diff  Left Version Id   Right Version Id  Get
-     * Diff endpoint
-     */
-    200: Array<Array<string>>;
+  /**
+   * Response Get Diff Diff  Left Version Id   Right Version Id  Get
+   * Diff endpoint
+   */
+  200: Array<Array<string>>;
 };
 
-export type GetDiffDiffLeftVersionIdRightVersionIdGetResponse = GetDiffDiffLeftVersionIdRightVersionIdGetResponses[keyof GetDiffDiffLeftVersionIdRightVersionIdGetResponses];
+export type GetDiffDiffLeftVersionIdRightVersionIdGetResponse =
+  GetDiffDiffLeftVersionIdRightVersionIdGetResponses[keyof GetDiffDiffLeftVersionIdRightVersionIdGetResponses];
 
 export type StartWorkImportPostData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/import';
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/import";
 };
 
 export type StartWorkImportPostResponses = {
-    /**
-     * Successful Response
-     */
-    202: unknown;
+  /**
+   * Successful Response
+   */
+  202: unknown;
 };
 
 export type ClientOptions = {
-    baseUrl: 'http://localhost:8000' | (string & {});
+  baseUrl: "http://localhost:8000" | (string & {});
 };
