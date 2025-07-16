@@ -4,7 +4,6 @@ import { computed, onServerPrefetch, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import DiffOptions, { type DifferOptions } from "./DiffOptions.vue";
-import MoveChangeButtons from "./paragraphs/MoveChangeButtons.vue";
 import ParagraphXMLViewer from "./paragraphs/ParagraphXMLViewer.vue";
 import TableOfContents from "./paragraphs/TableOfContents.vue";
 import {
@@ -13,8 +12,13 @@ import {
   makeStringOptions,
   useSyncedUrlParam,
 } from "../composables/useSyncedUrlParam";
+import { clientOnly } from "vike-vue/clientOnly";
+import { useParsedDiff } from "../composables/useParsedDiff";
 
 const props = defineProps<{ law: LawDetailProjection }>();
+
+const MoveChangeButtons = clientOnly(() => import("./paragraphs/MoveChangeButtons.vue"));
+
 const versions = useSyncedUrlParam({
   oldVersion: makeStringOptions(props.law.versions[0]?.id),
   newVersion: makeStringOptions(props.law.versions[props.law.versions.length - 1]?.id),
@@ -46,6 +50,8 @@ const queryOptions = computed(() => {
 
 const { data: diff, status, suspense } = useQuery(queryOptions);
 onServerPrefetch(suspense);
+
+const parsedDiff = useParsedDiff(diff);
 </script>
 
 <template>
@@ -64,13 +70,15 @@ onServerPrefetch(suspense);
     <p v-else-if="status === 'error'" class="text-error-content">Fehler beim Laden</p>
     <template v-else-if="diff">
       <teleport to="#teleported">
-        <TableOfContents class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28" :parent-element="diffEl" />
+        <TableOfContents
+          class="fixed top-16 bottom-0 left-0 w-16 md:w-24 lg:w-28"
+          :diffs="parsedDiff"
+          :parent-element="diffEl"
+        />
         <MoveChangeButtons class="fixed bottom-4 right-4" :parent-element="diffEl" />
       </teleport>
       <div ref="diffParent" class="max-w-full" :class="[options.split ? 'grid grid-cols-2 gap-4' : 'flex flex-col']">
-        <template v-for="(paragraph, i) in diff" :key="`${i}-${paragraph.map((c) => c.length)}`">
-          <ParagraphXMLViewer v-for="(content, j) in paragraph" :key="`p-${j}-${content.length}`" :content />
-        </template>
+        <ParagraphXMLViewer v-for="diff in parsedDiff.flat()" :key="diff.id" :diff="diff" />
       </div>
     </template>
   </div>

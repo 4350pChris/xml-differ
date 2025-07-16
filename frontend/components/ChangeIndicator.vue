@@ -1,8 +1,6 @@
-<script lang="ts">
-export type ChangeType = boolean | "addition" | "deletion" | "mixed";
-</script>
-
 <script setup lang="ts">
+import type { ChangeType } from "../composables/useDiffChangeType";
+
 defineProps<{
   change: ChangeType;
 }>();

@@ -1,33 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { DOMParser } from "linkedom";
-import ChangeIndicator, { type ChangeType } from "../ChangeIndicator.vue";
+import ChangeIndicator from "../ChangeIndicator.vue";
+import { ParsedDiff } from "../../composables/useParsedDiff";
 
-const props = defineProps<{ content: string }>();
-
-const xmlDoc = computed(() => {
-  const parser = new DOMParser();
-  return parser.parseFromString(props.content, "text/xml");
-});
-
-const id = computed(() => {
-  return xmlDoc.value.documentElement.getAttribute("doknr");
-});
-
-const change = computed<ChangeType>(() => {
-  const deletions = xmlDoc.value.documentElement.querySelectorAll(".diff-del")?.length;
-  const additions = xmlDoc.value.documentElement.querySelectorAll(".diff-insert")?.length;
-
-  if (!deletions && !additions) return false;
-  if (deletions && additions) return "mixed";
-  return deletions ? "deletion" : "addition";
-});
+defineProps<{ diff: ParsedDiff }>();
 </script>
 
 <template>
-  <div :id="id" class="scroll-mt-16 indicator prose w-full" data-wrapper="true" :data-change="change">
-    <ChangeIndicator :change="change" />
-    <div class="w-full break-words" v-html="xmlDoc.documentElement.innerHTML"></div>
+  <div :id="diff.id" class="scroll-mt-16 indicator prose w-full" data-wrapper>
+    <ChangeIndicator :change="diff.change" />
+    <div class="w-full break-words" v-html="diff.doc.innerHTML"></div>
   </div>
 </template>
 

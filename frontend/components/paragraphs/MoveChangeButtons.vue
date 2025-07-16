@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useCycleList, useMutationObserver, useTimeoutFn, whenever } from "@vueuse/core";
 
 const props = defineProps<{
@@ -11,13 +11,14 @@ const diffs = ref<HTMLElement[]>([]);
 
 const setDiffs = () => {
   if (props.parentElement) {
-    diffs.value = Array.from(props.parentElement.querySelectorAll<HTMLElement>(".diff-insert, .diff-del"));
+    const diffElements = props.parentElement.querySelectorAll<HTMLElement>(".diff-insert, .diff-del");
+    diffs.value = Array.from(diffElements);
   } else {
     diffs.value = [];
   }
 };
 
-whenever(() => props.parentElement, setDiffs);
+whenever(() => props.parentElement, setDiffs, { immediate: true });
 
 useMutationObserver(() => props.parentElement, setDiffs, { childList: true, subtree: true });
 

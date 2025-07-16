@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import { throttledRef, useWindowScroll } from "@vueuse/core";
-import ChangeIndicator, { ChangeType } from "../ChangeIndicator.vue";
+import ChangeIndicator from "../ChangeIndicator.vue";
+import { ChangeType, ParsedDiff } from "../../composables/useParsedDiff";
 
 const props = defineProps<{
+  diffs: ParsedDiff[][];
   parentElement: HTMLElement | null;
 }>();
 
 // get all diff elements from the parent element
 const headerElements = computed(() => {
   if (props.parentElement) {
-    return Array.from(props.parentElement.querySelectorAll<HTMLElement>("[data-wrapper='true']"));
+    return Array.from(props.parentElement.querySelectorAll<HTMLElement>("[data-wrapper]"));
   }
   return [];
 });
@@ -30,11 +32,6 @@ const visibleElement = computed(() => {
   return null;
 });
 
-const getChangeType = (val: string | undefined) => {
-  if (!val || val === "false") return false;
-  return val as ChangeType;
-};
-
 type TocItem = {
   id: `toc-${string}`;
   href: `#${string}`;
@@ -44,12 +41,13 @@ type TocItem = {
 
 const toc = computed(() => {
   const map = new Map<string, TocItem>();
-  headerElements.value.forEach((el, index) => {
-    map.set(el.id, {
-      id: `toc-${el.id}`,
-      href: `#${el.id}`,
-      name: el.querySelector(".enbez")?.textContent?.trim()?.split(" ").slice(0, 2).join(" ") || `Item ${index + 1}`,
-      change: getChangeType(el.dataset.change),
+  props.diffs.forEach((paragraphs) => {
+    const { id, doc, change } = paragraphs[paragraphs.length - 1];
+    map.set(id, {
+      id: `toc-${id}`,
+      href: `#${id}`,
+      name: doc.querySelector(".enbez")?.textContent?.trim()?.split(" ").slice(0, 2).join(" ") || "Unbenannt",
+      change,
     });
   });
   return map;
