@@ -66,6 +66,9 @@ const ratioOptions: { value: DifferOptions["ratio_mode"]; label: string }[] = [
   </button>
   <dialog ref="modal" class="modal modal-bottom sm:modal-middle" @submit.stop>
     <div class="modal-box">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
       <DiffViewSwitch v-model="options.split" />
       <fieldset class="fieldset bg-base-100">
         <legend class="fieldset-legend text-lg">Versionen</legend>
