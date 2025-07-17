@@ -287,10 +287,10 @@
     </xsl:template>
 
     <xsl:template match="LA">
-        <div class="la">
+        <span>
             <xsl:copy-of select="@*[not(namespace-uri() = 'http://namespaces.shoobx.com/diff')]"/>
             <xsl:call-template name="apply-diff-wrapper"/>
-        </div>
+        </span>
     </xsl:template>
 
     <!-- ====== TABLE ELEMENTS ====== -->
