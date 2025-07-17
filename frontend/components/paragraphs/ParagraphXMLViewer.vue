@@ -35,12 +35,12 @@ defineProps<{ diff: ParsedDiff }>();
   margin-inline: 0.5rem;
 }
 
-:deep(.diff-insert) {
+:deep(.diff-insert, .diff-insert > *) {
   text-decoration: none;
   @apply bg-success/30 border-success p-1 scroll-mt-20;
 }
 
-:deep(.diff-del) {
+:deep(.diff-del, .diff-del > *) {
   text-decoration: none;
   @apply bg-error/30 border-error p-1 scroll-mt-20;
 }
