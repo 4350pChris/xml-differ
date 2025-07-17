@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ChangeIndicator from "../ChangeIndicator.vue";
-import { ParsedDiff } from "../../composables/useParsedDiff";
+import type { ParsedDiff } from "../../composables/useParsedDiff";
 
 defineProps<{ diff: ParsedDiff }>();
 </script>

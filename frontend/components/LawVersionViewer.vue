@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { LawDetailProjection } from "../client";
-import { computed, nextTick, onMounted, onServerPrefetch, ref, useTemplateRef } from "vue";
+import type { LawDetailProjection } from "../client";
+import { computed, nextTick, onMounted, onServerPrefetch, shallowRef, useTemplateRef } from "vue";
 import { getDiffDiffLeftVersionIdRightVersionIdGetOptions } from "../client/@tanstack/vue-query.gen";
 import { useQuery } from "@tanstack/vue-query";
 import DiffOptions, { type DifferOptions } from "./DiffOptions.vue";
@@ -54,7 +54,7 @@ onServerPrefetch(suspense);
 
 const parsedDiff = useParsedDiff(diff);
 
-const parentOffsetRef = ref(0);
+const parentOffsetRef = shallowRef(0);
 
 onMounted(() => {
   parentOffsetRef.value = diffEl.value?.offsetTop ?? 0;

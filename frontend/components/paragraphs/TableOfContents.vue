@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
-import { throttledRef, useWindowScroll } from "@vueuse/core";
+import { computed, shallowRef } from "vue";
+import { useIntersectionObserver, useMutationObserver, whenever } from "@vueuse/core";
 import ChangeIndicator from "../ChangeIndicator.vue";
-import { ChangeType, ParsedDiff } from "../../composables/useParsedDiff";
+import type { ChangeType, ParsedDiff } from "../../composables/useParsedDiff";
 
 const props = defineProps<{
   diffs: ParsedDiff[][];
@@ -14,27 +14,36 @@ const emits = defineEmits<{
 }>();
 
 // get all diff elements from the parent element
-const headerElements = computed(() => {
-  if (props.parentElement) {
-    return Array.from(props.parentElement.querySelectorAll<HTMLElement>("[data-wrapper]"));
-  }
-  return [];
-});
-const reverseHeaders = computed(() => [...headerElements.value.values()].reverse());
-const { y: _y } = useWindowScroll();
-const y = throttledRef(_y, 100);
-// find uppermost visible element in the viewport
-const visibleElement = computed(() => {
-  // trick to have this trigger when scrolling
-  if (!props.parentElement || y.value < 0) return null;
-  for (const el of reverseHeaders.value) {
-    const rect = el.getBoundingClientRect();
-    if (rect.top <= 80) {
-      return el.id;
+const headerElements = shallowRef<HTMLElement[]>([]);
+
+useMutationObserver(
+  () => props.parentElement,
+  () => {
+    if (props.parentElement) {
+      headerElements.value = Array.from(props.parentElement.querySelectorAll<HTMLElement>("[data-wrapper]"));
     }
-  }
-  return null;
-});
+  },
+  {
+    childList: true,
+    subtree: true,
+  },
+);
+
+const visibleElement = shallowRef<string>();
+
+useIntersectionObserver(
+  headerElements,
+  ([entry]) => {
+    // if the first element is visible, set it as the visible element
+    if (entry.isIntersecting) {
+      visibleElement.value = entry.target.id;
+    }
+  },
+  {
+    root: props.parentElement,
+    threshold: 0.1,
+  },
+);
 
 type TocItem = {
   id: `toc-${string}`;
@@ -58,15 +67,13 @@ const toc = computed(() => {
 });
 
 // if the corresponding toc element is not visible when the visible heading changes, scroll to it
-watch(visibleElement, (newVisible) => {
-  if (newVisible) {
-    const tocItem = toc.value.get(newVisible);
-    if (tocItem) {
-      // We use DOM manipulation here to save the overhead of keeping all refs in a list
-      const target = document.getElementById(tocItem.id);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+whenever(visibleElement, (newVisible) => {
+  const tocItem = toc.value.get(newVisible);
+  if (tocItem) {
+    // We use DOM manipulation here to save the overhead of keeping all refs in a list
+    const target = document.getElementById(tocItem.id);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 });
@@ -94,5 +101,3 @@ watch(visibleElement, (newVisible) => {
     </li>
   </ol>
 </template>
-
-<style scoped></style>

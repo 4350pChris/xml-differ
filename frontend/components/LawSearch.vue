@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useAllLaws } from "../composables/useAllLaws";
-import { computed, ref, useTemplateRef } from "vue";
+import { computed, shallowRef, useTemplateRef } from "vue";
 import LawList from "./LawList.vue";
 import { unrefElement, useMagicKeys, whenever } from "@vueuse/core";
 
 const { data: laws } = useAllLaws();
-const searchQuery = ref("");
+const searchQuery = shallowRef("");
 
 const filteredLaws = computed(() => {
   if (!laws.value || !searchQuery.value) return null;
