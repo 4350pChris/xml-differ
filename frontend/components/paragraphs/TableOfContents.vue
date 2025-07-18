@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, shallowRef } from "vue";
-import { useIntersectionObserver, useMutationObserver, whenever } from "@vueuse/core";
+import { computed, onMounted, shallowRef } from "vue";
+import { useEventListener, useMutationObserver, whenever, useThrottleFn } from "@vueuse/core";
 import ChangeIndicator from "../ChangeIndicator.vue";
 import type { ChangeType, ParsedDiff } from "../../composables/useParsedDiff";
 
@@ -52,18 +52,19 @@ const toc = computed(() => {
   return map;
 });
 
-useIntersectionObserver(
-  headerElements,
-  ([first, second]) => {
-    const entry = second ?? first;
-    const match = entry.isIntersecting && toc.value.has(entry.target.id);
-    if (!match) return;
-    visibleElement.value = entry.target.id;
-  },
-  {
-    threshold: 0.3,
-  },
-);
+const throttledScrollHandler = useThrottleFn(() => {
+  const targetY = window.innerHeight / 2;
+  const entry = [...headerElements.value].reverse().find((wrapper) => {
+    const { top } = wrapper.getBoundingClientRect();
+    const distance = top - targetY;
+    return distance < 0 && toc.value.has(wrapper.id);
+  });
+  visibleElement.value = entry?.id;
+}, 100);
+
+onMounted(() => {
+  useEventListener("scroll", throttledScrollHandler);
+});
 
 // if the corresponding toc element is not visible when the visible heading changes, scroll to it
 whenever(visibleElement, (newVisible) => {
