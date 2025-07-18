@@ -167,11 +167,12 @@ const scrollToItem = (id: string) => {
           :style="{
             height: `${totalSize}px`,
           }"
+          data-allow-mismatch="style"
         >
           <div
             class="absolute top-0 left-0 w-full"
             :style="{
-              transform: `translateY(${virtualRows[0]?.start - rowVirtualizer.options.scrollMargin}px)`,
+              transform: `translateY(${virtualRows[0]?.start - rowVirtualizer.options.scrollMargin || 0}px)`,
             }"
           >
             <div
