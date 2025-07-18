@@ -31,20 +31,6 @@ useMutationObserver(
 
 const visibleElement = shallowRef<string>();
 
-useIntersectionObserver(
-  headerElements,
-  ([entry]) => {
-    // if the first element is visible, set it as the visible element
-    if (entry.isIntersecting) {
-      visibleElement.value = entry.target.id;
-    }
-  },
-  {
-    root: props.parentElement,
-    threshold: 0.1,
-  },
-);
-
 type TocItem = {
   id: `toc-${string}`;
   href: `#${string}`;
@@ -66,6 +52,19 @@ const toc = computed(() => {
   return map;
 });
 
+useIntersectionObserver(
+  headerElements,
+  ([first, second]) => {
+    const entry = second ?? first;
+    const match = entry.isIntersecting && toc.value.has(entry.target.id);
+    if (!match) return;
+    visibleElement.value = entry.target.id;
+  },
+  {
+    threshold: 0.3,
+  },
+);
+
 // if the corresponding toc element is not visible when the visible heading changes, scroll to it
 whenever(visibleElement, (newVisible) => {
   const tocItem = toc.value.get(newVisible);
@@ -77,6 +76,12 @@ whenever(visibleElement, (newVisible) => {
     }
   }
 });
+
+const scrollTo = (item: TocItem) => {
+  const id = item.href.slice(1);
+  visibleElement.value = id;
+  emits("scrollTo", id);
+};
 </script>
 
 <template>
@@ -91,7 +96,7 @@ whenever(visibleElement, (newVisible) => {
         :href="item.href"
         class="inline-flex w-full px-2 py-1 hover:bg-base-200"
         :title="`Zu ${item.name} springen`"
-        @click.prevent="emits('scrollTo', item.href.slice(1))"
+        @click.prevent="scrollTo(item)"
       >
         <div class="indicator grow">
           <ChangeIndicator :change="item.change" />
