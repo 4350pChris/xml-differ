@@ -14,7 +14,7 @@ import {
 } from "../composables/useSyncedUrlParam";
 import { clientOnly } from "vike-vue/clientOnly";
 import { useParsedDiff } from "../composables/useParsedDiff";
-import { useWindowVirtualizer } from "@tanstack/vue-virtual";
+import { type Rect, useWindowVirtualizer } from "@tanstack/vue-virtual";
 
 const props = defineProps<{ law: LawDetailProjection }>();
 
@@ -65,6 +65,7 @@ const virtualizerOptions = computed(() => ({
   estimateSize: () => 500,
   scrollMargin: parentOffsetRef.value - 64,
   overscan: 10,
+  initialRect: { height: 800, width: 500 } satisfies Rect,
 }));
 
 const rowVirtualizer = useWindowVirtualizer(virtualizerOptions);
@@ -167,7 +168,7 @@ const scrollToItem = (id: string) => {
           :style="{
             height: `${totalSize}px`,
           }"
-          data-allow-mismatch="style"
+          data-allow-mismatch
         >
           <div
             class="absolute top-0 left-0 w-full"
