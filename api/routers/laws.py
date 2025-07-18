@@ -21,9 +21,9 @@ router = APIRouter(
     "", response_description="List of laws", response_model=List[LawListProjection]
 )
 @cache(expire=3600)
-async def get_laws(all: bool = False):
+async def get_laws(all_laws: bool = False) -> List[LawListProjection]:
     query = {}
-    if not all:
+    if not all_laws:
         query = {"$expr": {"$gt": [{"$size": "$versions"}, 1]}}
     laws = await Law.find(query).project(LawListProjection).to_list()
     return laws
@@ -31,7 +31,7 @@ async def get_laws(all: bool = False):
 
 @router.get("/{law_id}", response_model=LawDetailProjection)
 @cache(expire=3600)
-async def get_law(law_id: PydanticObjectId):
+async def get_law(law_id: PydanticObjectId) -> LawDetailProjection:
     law = await Law.get(
         law_id, fetch_links=True, nesting_depth=1, projection_model=LawDetailProjection
     )
